@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Listing Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans antialiased">
+    <div class="container mx-auto p-8">
+        <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">AI Listing Generator</h1>
+        <div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md">
+            <form id="listing-form" enctype="multipart/form-data">
+                <div class="mb-4">
+                    <label for="prompt" class="block text-gray-700 text-sm font-bold mb-2">Product Information (Optional):</label>
+                    <input type="text" id="prompt" name="prompt" placeholder="e.g., A vintage leather jacket" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label for="platform" class="block text-gray-700 text-sm font-bold mb-2">Platform:</label>
+                        <select id="platform" name="platform" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            <option>Amazon</option>
+                            <option>Etsy</option>
+                            <option>eBay</option>
+                            <option>Ali Express</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="language" class="block text-gray-700 text-sm font-bold mb-2">Language:</label>
+                        <input type="text" id="language" name="language" value="English" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    </div>
+                    <div>
+                        <label for="country" class="block text-gray-700 text-sm font-bold mb-2">Country:</label>
+                        <input type="text" id="country" name="country" value="Global" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    </div>
+                    <div>
+                        <label for="currency" class="block text-gray-700 text-sm font-bold mb-2">Currency:</label>
+                        <input type="text" id="currency" name="currency" value="USD" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <label for="images" class="block text-gray-700 text-sm font-bold mb-2">Upload Images (up to 5):</label>
+                    <input type="file" id="images" name="images" multiple accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100">
+                </div>
+                <div class="flex items-center justify-center">
+                    <button type="submit" id="submit-btn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Generate Listing
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div id="result-container" class="max-w-2xl mx-auto mt-8 p-8 bg-white rounded-lg shadow-md hidden">
+            <h2 class="text-2xl font-bold mb-4 text-gray-800">Generated Listing:</h2>
+            <div id="result" class="text-gray-700 whitespace-pre-wrap"></div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('listing-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultContainer = document.getElementById('result-container');
+        const resultDiv = document.getElementById('result');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData();
+            const prompt = document.getElementById('prompt').value;
+            const platform = document.getElementById('platform').value;
+            const language = document.getElementById('language').value;
+            const country = document.getElementById('country').value;
+            const currency = document.getElementById('currency').value;
+            const images = document.getElementById('images').files;
+
+            formData.append('prompt', prompt);
+            formData.append('platform', platform);
+            formData.append('language', language);
+            formData.append('country', country);
+            formData.append('currency', currency);
+
+            for (let i = 0; i < images.length; i++) {
+                formData.append('images', images[i]);
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Generating...';
+            resultContainer.classList.add('hidden');
+
+            try {
+                const response = await fetch('/api/generate-listings', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to generate listing.');
+                }
+
+                const data = await response.json();
+                let htmlContent = '';
+                for (const [key, value] of Object.entries(data.listing)) {
+                    const formattedKey = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    if (Array.isArray(value)) {
+                        htmlContent += `<p class="mb-2"><strong>${formattedKey}:</strong></p><ul class="list-disc list-inside mb-4">`;
+                        value.forEach(item => {
+                            htmlContent += `<li>${item}</li>`;
+                        });
+                        htmlContent += '</ul>';
+                    } else if (typeof value === 'object' && value !== null) {
+                        htmlContent += `<p class="mb-2"><strong>${formattedKey}:</strong></p><div class="pl-4 mb-4">`;
+                        for (const [subKey, subValue] of Object.entries(value)) {
+                            htmlContent += `<p><strong>${subKey}:</strong> ${subValue}</p>`;
+                        }
+                        htmlContent += '</div>';
+                    } else {
+                        htmlContent += `<p class="mb-4"><strong>${formattedKey}:</strong><br>${value}</p>`;
+                    }
+                }
+                resultDiv.innerHTML = htmlContent;
+                resultContainer.classList.remove('hidden');
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please check the console for details.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Generate Listing';
+            }
+        });
+    </script>
+</body>
+</html>
