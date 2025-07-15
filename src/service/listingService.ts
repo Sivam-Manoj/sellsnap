@@ -24,6 +24,7 @@ export const generateListings = async (
       throw new Error(`Platform "${platform}" not found for this user.`);
     }
 
+    console.log(imageUrls.join(", "));
     // Use the system message from the database
     const systemMessage = platformDoc.systemMessage;
     // This will be defined inside the try-catch blocks
@@ -55,7 +56,7 @@ export const generateListings = async (
 
       const response = await openai.chat.completions.create({
         model: "gpt-4o",
-        max_tokens: 30000,
+        max_tokens: 16000,
         messages: [
           { role: "system", content: systemMessage },
           { role: "user", content: [textMessage, ...imageMessagesFromUrls] },
@@ -83,7 +84,7 @@ export const generateListings = async (
 
       const response = await openai.chat.completions.create({
         model: "gpt-4o",
-        max_tokens: 30000, // Using a larger token limit
+        max_tokens: 16000, // Using a larger token limit
         messages: [
           {
             role: "system",
