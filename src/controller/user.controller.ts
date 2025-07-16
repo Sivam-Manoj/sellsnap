@@ -36,6 +36,11 @@ export const deleteUserAccount = async (req: AuthRequest, res: Response) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
+    // This action is only for users with an email and password
+    if (user.authProvider !== 'email' || !user.password) {
+      return res.status(400).json({ message: 'This action is not available for accounts created with Google.' });
+    }
+
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
