@@ -23,12 +23,6 @@ export const getUserProfile = async (req: AuthRequest, res: Response) => {
 // @route   DELETE /api/user
 // @access  Private
 export const deleteUserAccount = async (req: AuthRequest, res: Response) => {
-  const { password } = req.body;
-
-  if (!password) {
-    return res.status(400).json({ message: 'Password is required' });
-  }
-
   try {
     const user = await User.findById(req.userId).select('+password');
 
@@ -36,17 +30,26 @@ export const deleteUserAccount = async (req: AuthRequest, res: Response) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // This action is only for users with an email and password
-    if (user.authProvider !== 'email' || !user.password) {
-      return res.status(400).json({ message: 'This action is not available for accounts created with Google.' });
+    // If the user signed up with email, we need to verify their password
+    if (user.authProvider === 'email') {
+      const { password } = req.body;
+      if (!password) {
+        return res.status(400).json({ message: 'Password is required' });
+      }
+
+      // This should not happen for email provider, but as a safeguard
+      if (!user.password) {
+        return res.status(400).json({ message: 'Password not set for this account.' });
+      }
+
+      const isMatch = await bcrypt.compare(password, user.password);
+
+      if (!isMatch) {
+        return res.status(401).json({ message: 'Invalid credentials' });
+      }
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
-
-    if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid credentials' });
-    }
-
+    // For Google-authenticated users, or if email/password is a match, proceed with deletion.
     await User.findByIdAndDelete(req.userId);
 
     res.json({ message: 'User account deleted successfully' });

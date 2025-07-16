@@ -10,7 +10,7 @@ dotenv.config();
 
 
 export const signup = async (req: Request, res: Response) => {
-  const { email, password, username } = req.body;
+  const { email, password } = req.body;
 
   try {
     const existingUser = await User.findOne({ email });
@@ -19,6 +19,7 @@ export const signup = async (req: Request, res: Response) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
+    const username = email.split('@')[0];
 
     const newUser = new User({
       email,
