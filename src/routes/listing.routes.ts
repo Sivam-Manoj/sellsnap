@@ -14,7 +14,7 @@ import { protect } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-router.post("/generate", protect, upload.array("images", 5), generateListingsController);
+router.post("/generate", protect, upload.array("images", 10), generateListingsController);
 router.get("/summary", protect, getListingsSummaryController);
 router.get("/recent", protect, getRecentListingsController);
 router.get("/", protect, getAllListingsController);
