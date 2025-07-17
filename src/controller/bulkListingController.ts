@@ -2,7 +2,6 @@ import { Response } from "express";
 import { AuthRequest } from "../middleware/auth.middleware.js";
 import { processBulkListing } from "../service/bulkListingService.js";
 import { uploadToR2 } from "../utils/r2Storage/r2Upload.js";
-import User from "../models/user.model.js";
 
 export const createBulkListing = async (req: AuthRequest, res: Response) => {
   try {
@@ -27,13 +26,6 @@ export const createBulkListing = async (req: AuthRequest, res: Response) => {
       return res.status(401).json({ message: "User not authenticated." });
     }
 
-    // Get the user and determine a safe username fallback
-    const user = await User.findById(userId);
-    const rawUsername = user?.email || user?.username || userId;
-    const username = String(rawUsername)
-      .replace(/[^a-zA-Z0-9@.]/g, "-") // Clean for filesystem safety
-      .replace(/@/g, "_at_") // Optional: replace @ to prevent folder conflicts
-      .toLowerCase();
 
     // The 'products' from the body will tell us how many images belong to each product.
     // We assume the files are sent in the same order as the products.
@@ -51,8 +43,7 @@ export const createBulkListing = async (req: AuthRequest, res: Response) => {
 
       for (const file of productImages) {
         const timestamp = Date.now();
-        const cleanFileName = file.originalname.replace(/[^a-zA-Z0-9.]/g, "_");
-        const fileName = `uploads/listings/${username}/${timestamp}-${cleanFileName}`;
+        const fileName = `uploads/listings/${userId}/${timestamp}-${file.originalname}`;
         await uploadToR2(file, process.env.R2_BUCKET_NAME!, fileName);
         const fileUrl = `https://images.sellsnap.store/${fileName}`;
         imageUrls.push(fileUrl);

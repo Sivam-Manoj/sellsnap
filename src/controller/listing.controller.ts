@@ -35,25 +35,12 @@ export const generateListingsController = async (
         message: "Missing required fields for listing generation.",
       });
     }
-
-    // Get the user and determine a safe username fallback
-    const user = await User.findById(userId);
-    const rawUsername = user?.email || user?.username || userId;
-    const username = String(rawUsername)
-      .replace(/[^a-zA-Z0-9@.]/g, "-") // Clean for filesystem safety
-      .replace(/@/g, "_at_") // Optional: replace @ to prevent folder conflicts
-      .toLowerCase();
-
     const imageUrls: string[] = [];
     if (files?.length) {
       for (const file of files) {
         try {
           const timestamp = Date.now();
-          const cleanFileName = file.originalname.replace(
-            /[^a-zA-Z0-9.]/g,
-            "_"
-          );
-          const fileName = `uploads/listings/${username}/${timestamp}-${cleanFileName}`;
+          const fileName = `uploads/listings/${userId}/${timestamp}-${file.originalname}`;
           await uploadToR2(file, process.env.R2_BUCKET_NAME!, fileName);
           const fileUrl = `https://images.sellsnap.store/${fileName}`;
           imageUrls.push(fileUrl);
@@ -234,10 +221,6 @@ export const updateListingController = async (
   const userId = req.userId;
   const updateData = req.body;
 
-  console.log(userId);
-  console.log(listingId);
-  console.log(updateData);
-
   if (!userId) {
     return res
       .status(401)
@@ -246,7 +229,6 @@ export const updateListingController = async (
 
   try {
     const updatedListing = await updateListing(listingId, userId, updateData);
-    console.log(updatedListing);
     if (!updatedListing) {
       return res.status(404).json({
         message:
