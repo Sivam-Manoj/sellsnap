@@ -12,88 +12,104 @@ import {
   updateListing,
 } from "../service/listingService.js";
 import { AuthRequest } from "../middleware/auth.middleware.js";
+import User from "../models/user.model.js";
 
 export const generateListingsController = async (
   req: AuthRequest,
   res: Response
 ) => {
   try {
-    const { platform, language, country, currency, prompt, priceAnalysisEnabled } = req.body;
+    const {
+      platform,
+      language,
+      country,
+      currency,
+      prompt,
+      priceAnalysisEnabled,
+    } = req.body;
     const files = req.files as Express.Multer.File[];
     const userId = req.userId;
 
     if (!platform || !language || !country || !currency) {
-      return res
-        .status(400)
-        .json({ message: "Missing required fields for listing generation." });
+      return res.status(400).json({
+        message: "Missing required fields for listing generation.",
+      });
     }
 
+    // Get the user and determine a safe username fallback
+    const user = await User.findById(userId);
+    const rawUsername = user?.email || user?.username || userId;
+    const username = String(rawUsername)
+      .replace(/[^a-zA-Z0-9@.]/g, "-") // Clean for filesystem safety
+      .replace(/@/g, "_at_") // Optional: replace @ to prevent folder conflicts
+      .toLowerCase();
+
     const imageUrls: string[] = [];
-    if (files && files.length > 0) {
-      try {
-        for (const file of files) {
-          const fileName = `uploads/${Date.now()}-${file.originalname}`;
+    if (files?.length) {
+      for (const file of files) {
+        try {
+          const timestamp = Date.now();
+          const cleanFileName = file.originalname.replace(
+            /[^a-zA-Z0-9.]/g,
+            "_"
+          );
+          const fileName = `uploads/listings/${username}/${timestamp}-${cleanFileName}`;
           await uploadToR2(file, process.env.R2_BUCKET_NAME!, fileName);
-          const fileUrl = `https://pub-9240903e216140d297b5e291c5c39732.r2.dev/${fileName}`;
+          const fileUrl = `https://images.sellsnap.store/${fileName}`;
           imageUrls.push(fileUrl);
+        } catch (uploadError: any) {
+          console.error("File upload failed:", uploadError);
+          return res.status(500).json({
+            message: "File upload failed",
+            error: uploadError.message,
+          });
         }
-      } catch (uploadError: any) {
-        console.error("File upload failed:", uploadError);
-        return res.status(500).json({
-          message: "File upload failed",
-          error: uploadError.message,
-        });
       }
     }
 
     const newListing = await generateListings(
       prompt,
       imageUrls,
-      files, // Pass files for fallback
+      files,
       platform,
       language,
       country,
       currency,
       userId as string
     );
-    if (priceAnalysisEnabled === 'true') {
-      const priceDetailsString = await getRealtimePriceDetails(newListing);
 
+    if (priceAnalysisEnabled === "true") {
+      const priceDetailsString = await getRealtimePriceDetails(newListing);
       if (priceDetailsString) {
         try {
-          // Clean the string from markdown fences
-          const jsonMatch = priceDetailsString.match(/```json\n([\s\S]*?)\n```/);
+          const jsonMatch = priceDetailsString.match(
+            /```json\n([\s\S]*?)\n```/
+          );
           const jsonString = jsonMatch ? jsonMatch[1] : priceDetailsString;
-
           newListing.priceDetails = JSON.parse(jsonString);
           await newListing.save();
         } catch (error) {
           console.error("Failed to parse or save price details:", error);
-          // For now, we'll just log it and return the listing without price details
+          // Do not block listing return due to price detail parsing
         }
       }
     }
 
-    res.status(201).json(newListing);
+    return res.status(201).json(newListing);
   } catch (error: any) {
     console.error("Error in generateListingsController:", error);
-    // Provide more specific error feedback
     if (error.message.includes("Failed to generate listing content from AI")) {
-      return res
-        .status(500)
-        .json({
-          message:
-            "The AI failed to generate listing content. This might be due to a restrictive prompt or a problem with the AI service. Please try again.",
-        });
+      return res.status(500).json({
+        message:
+          "The AI failed to generate listing content. This might be due to a restrictive prompt or a problem with the AI service. Please try again.",
+      });
     }
     if (error.message.includes("not found for this user")) {
       return res.status(404).json({ message: error.message });
     }
-    res
-      .status(500)
-      .json({
-        message: "An unexpected error occurred while generating listings.",
-      });
+    return res.status(500).json({
+      message: "An unexpected error occurred while generating listings.",
+    });
   }
 };
 
@@ -165,8 +181,10 @@ export const updateListingPriceController = async (
     const { listingId } = req.params;
     const { price } = req.body;
 
-    if (!price || typeof price !== 'number') {
-      return res.status(400).json({ message: 'Price is required and must be a number.' });
+    if (!price || typeof price !== "number") {
+      return res
+        .status(400)
+        .json({ message: "Price is required and must be a number." });
     }
 
     const updatedListing = await updateListingPrice(listingId, price);
@@ -176,7 +194,10 @@ export const updateListingPriceController = async (
   }
 };
 
-export const analyzePriceController = async (req: AuthRequest, res: Response) => {
+export const analyzePriceController = async (
+  req: AuthRequest,
+  res: Response
+) => {
   try {
     const { listingId } = req.params;
     const updatedListing = await analyzePriceForListing(listingId);
@@ -205,7 +226,10 @@ export const deleteListingController = async (
   }
 };
 
-export const updateListingController = async (req: AuthRequest, res: Response) => {
+export const updateListingController = async (
+  req: AuthRequest,
+  res: Response
+) => {
   const { listingId } = req.params;
   const userId = req.userId;
   const updateData = req.body;
@@ -215,19 +239,26 @@ export const updateListingController = async (req: AuthRequest, res: Response) =
   console.log(updateData);
 
   if (!userId) {
-    return res.status(401).json({ message: 'Authentication error: User ID is missing.' });
+    return res
+      .status(401)
+      .json({ message: "Authentication error: User ID is missing." });
   }
 
   try {
     const updatedListing = await updateListing(listingId, userId, updateData);
     console.log(updatedListing);
     if (!updatedListing) {
-      return res.status(404).json({ message: 'Listing not found or you do not have permission to update it.' });
+      return res.status(404).json({
+        message:
+          "Listing not found or you do not have permission to update it.",
+      });
     }
 
     return res.status(200).json(updatedListing);
   } catch (error) {
-    console.error('Error updating listing:', error);
-    return res.status(500).json({ message: 'Server error while updating listing.' });
+    console.error("Error updating listing:", error);
+    return res
+      .status(500)
+      .json({ message: "Server error while updating listing." });
   }
 };
