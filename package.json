@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+     "deploy": "git pull && npm run build && pm2 restart sellsnap"
   },
   "keywords": [],
   "author": "",
