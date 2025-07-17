@@ -40,7 +40,7 @@ export const generateListingsController = async (
       for (const file of files) {
         try {
           const timestamp = Date.now();
-          const fileName = `uploads/listings/${userId}/${timestamp}-${file.originalname}`;
+          const fileName = `uploads/listings/${timestamp}-${file.originalname}`;
           await uploadToR2(file, process.env.R2_BUCKET_NAME!, fileName);
           const fileUrl = `https://images.sellsnap.store/${fileName}`;
           imageUrls.push(fileUrl);
