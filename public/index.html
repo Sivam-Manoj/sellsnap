@@ -64,37 +64,34 @@
         .gradient-bg {
             background: linear-gradient(120deg, #d13232 0%, #b92424 100%);
         }
-        #mobile-menu {
-            display: none;
-        }
         .feature-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
     </style>
 </head>
 <body class="bg-gray-100">
 
     <!-- Header -->
-    <header class="bg-white shadow-md sticky top-0 z-50">
+    <header x-data="{ mobileMenuOpen: false }" class="bg-white shadow-md sticky top-0 z-50">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center">
-                <img src="/transparent.png" alt="Sellsnap AI Listings Generator Logo" class="h-8 w-8 mr-2">
-                <span class="text-2xl font-extrabold text-gray-800">Sellsnap</span>
+                <img src="/transparent.png" alt="Sellsnap Logo" class="h-8 w-8 mr-2">
+                <span class="text-2xl font-bold text-gray-800">Sellsnap</span>
             </div>
-            <nav class="hidden md:flex items-center space-x-6">
-                <a href="#features" class="text-gray-600 hover:text-red-600 font-medium">Features</a>
-                <a href="#how-it-works" class="text-gray-600 hover:text-red-600 font-medium">How It Works</a>
-                <a href="#pricing" class="text-gray-600 hover:text-red-600 font-medium">Pricing</a>
-                <a href="#pricing" class="bg-red-600 text-white px-5 py-2 rounded-full font-semibold hover:bg-red-700 transition-colors">Get Started</a>
+            <nav class="hidden md:flex space-x-8 items-center">
+                <a href="#features" class="text-gray-600 hover:text-red-600">Features</a>
+                <a href="#faq" class="text-gray-600 hover:text-red-600">FAQ</a>
+                <a href="#pricing" class="text-gray-600 hover:text-red-600">Pricing</a>
+                <a href="#pricing" class="bg-red-600 text-white font-semibold px-6 py-2 rounded-full hover:bg-red-700 transition-transform transform hover:scale-105">Get Started</a>
             </nav>
-            <button id="hamburger-button" class="md:hidden text-gray-800 focus:outline-none">
+            <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden text-gray-800 focus:outline-none">
                 <i class="fas fa-bars text-2xl"></i>
             </button>
         </div>
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-white shadow-md">
-            <a href="#features" class="block py-3 px-6 text-gray-600 hover:bg-gray-100">Features</a>
-            <a href="#how-it-works" class="block py-3 px-6 text-gray-600 hover:bg-gray-100">How It Works</a>
-            <a href="#pricing" class="block py-3 px-6 text-gray-600 hover:bg-gray-100">Pricing</a>
-            <a href="#pricing" class="block py-3 px-6 text-red-600 font-semibold hover:bg-gray-100">Get Started</a>
+        <div x-show="mobileMenuOpen" @click.away="mobileMenuOpen = false" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform -translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform -translate-y-2" class="md:hidden bg-white shadow-md">
+            <a href="#features" @click="mobileMenuOpen = false" class="block py-3 px-6 text-gray-600 hover:bg-gray-100">Features</a>
+            <a href="#faq" @click="mobileMenuOpen = false" class="block py-3 px-6 text-gray-600 hover:bg-gray-100">FAQ</a>
+            <a href="#pricing" @click="mobileMenuOpen = false" class="block py-3 px-6 text-gray-600 hover:bg-gray-100">Pricing</a>
+            <a href="#pricing" @click="mobileMenuOpen = false" class="block py-3 px-6 text-red-600 font-semibold hover:bg-gray-100">Get Started</a>
         </div>
     </header>
 
@@ -403,30 +400,8 @@
         </div>
     </footer>
 
+    <!-- Scripts -->
     <script defer src="https://unpkg.com/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const hamburgerButton = document.getElementById('hamburger-button');
-            const mobileMenu = document.getElementById('mobile-menu');
-
-            if (hamburgerButton) {
-                hamburgerButton.addEventListener('click', () => {
-                    mobileMenu.classList.toggle('hidden');
-                });
-            }
-
-            // Close menu when a link is clicked
-            const mobileMenuLinks = mobileMenu.getElementsByTagName('a');
-            for (let link of mobileMenuLinks) {
-                link.addEventListener('click', () => {
-                    if (!mobileMenu.classList.contains('hidden')) {
-                        mobileMenu.classList.add('hidden');
-                    }
-                });
-            }
-        });
-    </script>
 </body>
 </html>
