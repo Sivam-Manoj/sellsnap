@@ -12,91 +12,65 @@ import {
   updateListing,
 } from "../service/listingService.js";
 import { AuthRequest } from "../middleware/auth.middleware.js";
-import User from "../models/user.model.js";
 
-export const generateListingsController = async (
-  req: AuthRequest,
-  res: Response
-) => {
+export const generateListingsController = async (req: AuthRequest, res: Response) => {
   try {
-    const {
-      platform,
-      language,
-      country,
-      currency,
-      prompt,
-      priceAnalysisEnabled,
-    } = req.body;
+    let { platform: platforms, language, country, currency, prompt, priceAnalysisEnabled } = req.body;
     const files = req.files as Express.Multer.File[];
     const userId = req.userId;
 
-    if (!platform || !language || !country || !currency) {
-      return res.status(400).json({
-        message: "Missing required fields for listing generation.",
-      });
+    if (!userId) {
+      return res.status(401).json({ message: 'Unauthorized: User ID is missing.' });
     }
+
+    if (platforms && !Array.isArray(platforms)) {
+      platforms = [platforms];
+    }
+
+    if (!platforms || platforms.length === 0 || !language || !country || !currency) {
+      return res.status(400).json({ message: 'Missing required fields for listing generation.' });
+    }
+
     const imageUrls: string[] = [];
     if (files?.length) {
       for (const file of files) {
-        try {
-          const timestamp = Date.now();
-          const fileName = `uploads/listings/${timestamp}-${file.originalname}`;
-          await uploadToR2(file, process.env.R2_BUCKET_NAME!, fileName);
-          const fileUrl = `https://images.sellsnap.store/${fileName}`;
-          imageUrls.push(fileUrl);
-        } catch (uploadError: any) {
-          console.error("File upload failed:", uploadError);
-          return res.status(500).json({
-            message: "File upload failed",
-            error: uploadError.message,
-          });
-        }
+        const timestamp = Date.now();
+        const fileName = `uploads/listings/${timestamp}-${file.originalname}`;
+        await uploadToR2(file, process.env.R2_BUCKET_NAME!, fileName);
+        const fileUrl = `https://images.sellsnap.store/${fileName}`;
+        imageUrls.push(fileUrl);
       }
     }
 
-    const newListing = await generateListings(
-      prompt,
-      imageUrls,
-      files,
-      platform,
-      language,
-      country,
-      currency,
-      userId as string
-    );
+    const createdListings = [];
+    for (const platform of platforms) {
+      try {
+        const [newListing] = await generateListings(prompt, imageUrls, files, [platform], language, country, currency, userId);
 
-    if (priceAnalysisEnabled === "true") {
-      const priceDetailsString = await getRealtimePriceDetails(newListing);
-      if (priceDetailsString) {
-        try {
-          const jsonMatch = priceDetailsString.match(
-            /```json\n([\s\S]*?)\n```/
-          );
-          const jsonString = jsonMatch ? jsonMatch[1] : priceDetailsString;
-          newListing.priceDetails = JSON.parse(jsonString);
-          await newListing.save();
-        } catch (error) {
-          console.error("Failed to parse or save price details:", error);
-          // Do not block listing return due to price detail parsing
+        if (priceAnalysisEnabled === 'true') {
+          const priceDetailsString = await getRealtimePriceDetails(newListing);
+          if (priceDetailsString) {
+            const jsonMatch = priceDetailsString.match(/```json\n([\s\S]*?)\n```/);
+            if (jsonMatch && jsonMatch[1]) {
+              newListing.priceDetails = JSON.parse(jsonMatch[1]);
+            } else {
+              newListing.priceDetails = JSON.parse(priceDetailsString);
+            }
+            await newListing.save();
+          }
         }
+        createdListings.push(newListing);
+      } catch (error: any) {
+        console.error(`Error processing platform ${platform}:`, error);
+        // Optionally, decide if you want to stop on first error or continue
       }
     }
 
-    return res.status(201).json(newListing);
+    res.status(201).json({ listings: createdListings });
+
   } catch (error: any) {
     console.error("Error in generateListingsController:", error);
-    if (error.message.includes("Failed to generate listing content from AI")) {
-      return res.status(500).json({
-        message:
-          "The AI failed to generate listing content. This might be due to a restrictive prompt or a problem with the AI service. Please try again.",
-      });
-    }
-    if (error.message.includes("not found for this user")) {
-      return res.status(404).json({ message: error.message });
-    }
-    return res.status(500).json({
-      message: "An unexpected error occurred while generating listings.",
-    });
+    res.status(500).json({ message: error.message });
   }
 };
 

@@ -8,126 +8,108 @@ export const generateListings = async (
   prompt: string,
   imageUrls: string[],
   files: Express.Multer.File[],
-  platform: string,
+  platforms: string[],
   language: string,
   country: string,
   currency: string,
   userId: string
 ) => {
-  try {
-    // Find the custom platform in the database
-    const platformDoc = await Platform.findOne({
-      name: platform,
-      user: userId,
-    });
-    if (!platformDoc) {
-      throw new Error(`Platform "${platform}" not found for this user.`);
-    }
+  const createdListings: IListing[] = [];
 
-    console.log(imageUrls.join(", "));
-    // Use the system message from the database
-    const systemMessage = platformDoc.systemMessage;
-    // This will be defined inside the try-catch blocks
-    let choice;
-
-    const textMessage = {
-      type: "text" as const,
-      text: `Generate a product listing based on the following details:
-    The output should be highly SEO optimized and should refer to the product shown in the image(s).
-    If image URLs are needed in the listing, use all the following URLs:
-    ${imageUrls.join(", ")}.
-    
-    - Product: ${prompt || "the item in the image(s)"}
-    - Platform: ${platform}
-    - Language: ${language}
-    - Country: ${country}
-    - Currency: ${currency}
-    
-    Please format the response strictly as a JSON object, following the system message instructions provided for this platform.`,
-    };
-
+  for (const platform of platforms) {
     try {
-      // Attempt 1: Use image URLs
-      console.log("Attempting to generate listing with image URLs...");
-      const imageMessagesFromUrls = imageUrls.map((url) => ({
-        type: "image_url" as const,
-        image_url: { url },
-      }));
+      const platformDoc = await Platform.findOne({ name: platform, user: userId });
+      if (!platformDoc) {
+        console.warn(`Platform "${platform}" not found for user ${userId}. Skipping.`);
+        continue; 
+      }
 
-      const response = await openai.chat.completions.create({
-        model: "gpt-4o",
-        max_tokens: 16000,
-        messages: [
-          { role: "system", content: systemMessage },
-          { role: "user", content: [textMessage, ...imageMessagesFromUrls] },
-        ],
-        response_format: { type: "json_object" },
-      });
-      choice = response.choices[0];
-    } catch (error: any) {
-      console.warn(
-        "Image URL approach failed. Falling back to raw image data.",
-        error.message
-      );
+      const systemMessage = platformDoc.systemMessage;
+      let choice;
 
-      // Fallback: Use raw image data if URL approach fails
-      const imageMessagesFromFiles = files.map((file) => {
-        const imageBuffer = fs.readFileSync(file.path);
-        const base64Image = imageBuffer.toString("base64");
-        return {
+      const textMessage = {
+        type: "text" as const,
+        text: `Generate a product listing based on the following details:
+      The output should be highly SEO optimized and should refer to the product shown in the image(s).
+      If image URLs are needed in the listing, use all the following URLs:
+      ${imageUrls.join(", ")}.
+      
+      - Product: ${prompt || "the item in the image(s)"}
+      - Platform: ${platform}
+      - Language: ${language}
+      - Country: ${country}
+      - Currency: ${currency}
+      
+      Please format the response strictly as a JSON object, following the system message instructions provided for this platform.`,
+      };
+
+      try {
+        const imageMessagesFromUrls = imageUrls.map((url) => ({
           type: "image_url" as const,
-          image_url: {
-            url: `data:${file.mimetype};base64,${base64Image}`,
-          },
-        };
+          image_url: { url },
+        }));
+
+        const response = await openai.chat.completions.create({
+          model: "gpt-4.1",
+          max_tokens: 16000,
+          messages: [
+            { role: "system", content: systemMessage },
+            { role: "user", content: [textMessage, ...imageMessagesFromUrls] },
+          ],
+          response_format: { type: "json_object" },
+        });
+        choice = response.choices[0];
+      } catch (error) {
+        console.warn("Image URL approach failed. Falling back to raw image data.", error);
+        const imageMessagesFromFiles = files.map((file) => {
+                    const absolutePath = path.resolve(file.path);
+          const imageAsBase64 = fs.readFileSync(absolutePath, 'base64');
+          return {
+            type: "image_url" as const,
+            image_url: { url: `data:${file.mimetype};base64,${imageAsBase64}` },
+          };
+        });
+
+        const response = await openai.chat.completions.create({
+          model: "gpt-4.1",
+          max_tokens: 16000,
+          messages: [
+            { role: "system", content: systemMessage },
+            { role: "user", content: [textMessage, ...imageMessagesFromFiles] },
+          ],
+          response_format: { type: "json_object" },
+        });
+        choice = response.choices[0];
+      }
+
+      const listingContent = choice.message.content;
+      if (!listingContent) {
+        const finishReason = choice.finish_reason;
+        console.error(`AI failed to generate content for platform ${platform}. Finish Reason: ${finishReason}`);
+        continue;
+      }
+
+      const parsedContent = JSON.parse(listingContent);
+      const newListing = new Listing({
+        listingData: parsedContent,
+        userId: userId,
+        platform: platform,
+        imageUrls: imageUrls,
       });
 
-      const response = await openai.chat.completions.create({
-        model: "gpt-4o",
-        max_tokens: 16000, // Using a larger token limit
-        messages: [
-          {
-            role: "system",
-            content: systemMessage, // Using the custom system message
-          },
-          {
-            role: "user",
-            content: [textMessage, ...imageMessagesFromFiles],
-          },
-        ],
-        response_format: { type: "json_object" },
-      });
-      choice = response.choices[0];
+      await newListing.save();
+      createdListings.push(newListing);
+    } catch (error) {
+      console.error(`Error generating listing for platform ${platform}:`, error);
+      // Decide if one failure should stop the whole process. For now, we'll just log and continue.
     }
-
-    const listingContent = choice.message.content;
-    if (!listingContent) {
-      const finishReason = choice.finish_reason;
-      console.error(
-        `AI failed to generate content. Finish Reason: ${finishReason}`
-      );
-      throw new Error(
-        `Failed to generate listing content from AI. Reason: ${finishReason}`
-      );
-    }
-
-    // It's a good practice to log the raw AI output for debugging
-    console.log("Raw AI Response:", listingContent);
-
-    const parsedContent = JSON.parse(listingContent);
-    const newListing = new Listing({
-      listingData: parsedContent,
-      userId: userId,
-      platform: platform,
-      imageUrls: imageUrls,
-    });
-
-    await newListing.save();
-    return newListing;
-  } catch (error) {
-    console.error("Error generating listings:", error);
-    throw new Error("Failed to generate listings.");
   }
+
+  if (createdListings.length === 0) {
+    throw new Error("Failed to generate any listings. Please check the platforms and try again.");
+  }
+
+  return createdListings;
 };
 
 export const getListingsSummary = async (userId: string) => {
