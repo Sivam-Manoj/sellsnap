@@ -8,7 +8,7 @@
     "dev": "nodemon src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-     "deploy": "git pull && npm run build && pm2 restart sellsnap"
+    "deploy": "git pull && npm run build && pm2 restart sellsnap"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +20,7 @@
     "@types/passport": "^1.0.17",
     "@types/passport-google-oauth20": "^2.0.16",
     "aws-sdk": "^2.1692.0",
+    "axios": "^1.10.0",
     "bcryptjs": "^3.0.2",
     "dotenv": "^17.2.0",
     "express": "^5.1.0",
@@ -30,9 +31,11 @@
     "openai": "^5.8.3",
     "passport": "^0.7.0",
     "passport-apple": "^2.0.2",
-    "passport-google-oauth20": "^2.0.0"
+    "passport-google-oauth20": "^2.0.0",
+    "sib-api-v3-sdk": "^8.5.0"
   },
   "devDependencies": {
+    "@types/axios": "^0.9.36",
     "@types/express": "^5.0.3",
     "@types/multer": "^2.0.0",
     "@types/node": "^24.0.12",

@@ -28,8 +28,24 @@ const userSchema = new mongoose.Schema({
     enum: ['email', 'google'],
     default: 'email',
   },
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
+  verificationCode: {
+    type: String,
+  },
+  verificationCodeExpires: {
+    type: Date,
+  },
   refreshToken: {
     type: String,
+  },
+  passwordResetToken: {
+    type: String,
+  },
+  passwordResetExpires: {
+    type: Date,
   },
 }, { timestamps: true });
 
