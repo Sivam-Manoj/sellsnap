@@ -1,27 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- SEO Meta Tags -->
     <title>Sellsnap - AI E-commerce & Product Listings Generator</title>
-    <meta name="description" content="Generate high-converting e-commerce product listings in seconds with Sellsnap's AI. Perfect for Shopify, Amazon, eBay, Etsy, and more. Boost your sales with AI-powered titles, descriptions, and price analysis.">
-    <meta name="keywords" content="ai listings, ai product description generator, e-commerce seo, sellsnap, ai listings generator, amazon listing optimization, etsy listing tool, shopify product description, ebay listing software, facebook marketplace, ai-generated content, price analysis, multi-platform support">
+    <meta name="description"
+        content="Generate high-converting e-commerce product listings in seconds with Sellsnap's AI. Perfect for Shopify, Amazon, eBay, Etsy, and more. Boost your sales with AI-powered titles, descriptions, and price analysis.">
+    <meta name="keywords"
+        content="ai listings, ai product description generator, e-commerce seo, sellsnap, ai listings generator, amazon listing optimization, etsy listing tool, shopify product description, ebay listing software, facebook marketplace, ai-generated content, price analysis, multi-platform support">
     <link rel="canonical" href="https://www.sellsnap.app/index.html" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.sellsnap.app/">
     <meta property="og:title" content="Sellsnap - AI E-commerce & Product Listings Generator">
-    <meta property="og:description" content="Generate high-converting e-commerce product listings in seconds with Sellsnap's AI. Perfect for Shopify, Amazon, eBay, Etsy, and more.">
+    <meta property="og:description"
+        content="Generate high-converting e-commerce product listings in seconds with Sellsnap's AI. Perfect for Shopify, Amazon, eBay, Etsy, and more.">
     <meta property="og:image" content="https://www.sellsnap.app/transparent.png">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://www.sellsnap.app/">
     <meta property="twitter:title" content="Sellsnap - AI E-commerce & Product Listings Generator">
-    <meta property="twitter:description" content="Generate high-converting e-commerce product listings in seconds with Sellsnap's AI. Perfect for Shopify, Amazon, eBay, Etsy, and more.">
+    <meta property="twitter:description"
+        content="Generate high-converting e-commerce product listings in seconds with Sellsnap's AI. Perfect for Shopify, Amazon, eBay, Etsy, and more.">
     <meta property="twitter:image" content="https://www.sellsnap.app/transparent.png">
 
     <!-- Favicon -->
@@ -29,10 +34,11 @@
 
     <!-- Stylesheets -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
 
     <!-- JSON-LD Schema Markup -->
     <script type="application/ld+json">
@@ -58,17 +64,23 @@
         html {
             scroll-behavior: smooth;
         }
+
         body {
             font-family: 'Inter', sans-serif;
         }
+
         .gradient-bg {
             background: linear-gradient(120deg, #d13232 0%, #b92424 100%);
         }
-        .feature-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
     </style>
 </head>
-<body class="bg-gray-100">
 
+<body class="bg-gray-100">
     <!-- Header -->
     <header x-data="{ mobileMenuOpen: false }" class="bg-white shadow-md sticky top-0 z-50">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
@@ -80,18 +92,30 @@
                 <a href="#features" class="text-gray-600 hover:text-red-600">Features</a>
                 <a href="#faq" class="text-gray-600 hover:text-red-600">FAQ</a>
                 <a href="#pricing" class="text-gray-600 hover:text-red-600">Pricing</a>
-                <a href="#pricing" class="bg-red-600 text-white font-semibold px-6 py-2 rounded-full hover:bg-red-700 transition-transform transform hover:scale-105">Get Started</a>
+                <a href="#pricing"
+                    class="bg-red-600 text-white font-semibold px-6 py-2 rounded-full hover:bg-red-700 transition-transform transform hover:scale-105">Get
+                    Started</a>
             </nav>
             <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden text-gray-800 focus:outline-none">
                 <i class="fas fa-bars text-2xl"></i>
             </button>
         </div>
         <!-- Mobile Menu -->
-        <div x-show="mobileMenuOpen" @click.away="mobileMenuOpen = false" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform -translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform -translate-y-2" class="md:hidden bg-white shadow-md">
-            <a href="#features" @click="mobileMenuOpen = false" class="block py-3 px-6 text-gray-600 hover:bg-gray-100">Features</a>
-            <a href="#faq" @click="mobileMenuOpen = false" class="block py-3 px-6 text-gray-600 hover:bg-gray-100">FAQ</a>
-            <a href="#pricing" @click="mobileMenuOpen = false" class="block py-3 px-6 text-gray-600 hover:bg-gray-100">Pricing</a>
-            <a href="#pricing" @click="mobileMenuOpen = false" class="block py-3 px-6 text-red-600 font-semibold hover:bg-gray-100">Get Started</a>
+        <div x-show="mobileMenuOpen" @click.away="mobileMenuOpen = false"
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 transform -translate-y-2"
+            x-transition:enter-end="opacity-100 transform translate-y-0"
+            x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="opacity-100 transform translate-y-0"
+            x-transition:leave-end="opacity-0 transform -translate-y-2" class="md:hidden bg-white shadow-md">
+            <a href="#features" @click="mobileMenuOpen = false"
+                class="block py-3 px-6 text-gray-600 hover:bg-gray-100">Features</a>
+            <a href="#faq" @click="mobileMenuOpen = false"
+                class="block py-3 px-6 text-gray-600 hover:bg-gray-100">FAQ</a>
+            <a href="#pricing" @click="mobileMenuOpen = false"
+                class="block py-3 px-6 text-gray-600 hover:bg-gray-100">Pricing</a>
+            <a href="#pricing" @click="mobileMenuOpen = false"
+                class="block py-3 px-6 text-red-600 font-semibold hover:bg-gray-100">Get Started</a>
         </div>
     </header>
 
@@ -99,9 +123,11 @@
     <section class="gradient-bg text-white pt-40 pb-24">
         <div class="container mx-auto px-6 text-center">
             <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-4">Stop Typing. Start Selling.</h1>
-            <p class="text-lg md:text-xl text-red-200 max-w-3xl mx-auto mb-8">Sellsnap instantly transforms your product photos into powerful, high-converting listings for any marketplace. Powered by AI.</p>
+            <p class="text-lg md:text-xl text-red-200 max-w-3xl mx-auto mb-8">Sellsnap instantly transforms your product
+                photos into powerful, high-converting listings for any marketplace. Powered by AI.</p>
             <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mt-8 mb-6">
-                <a href="#" class="bg-black text-white px-5 py-2 rounded-lg flex items-center space-x-3 hover:bg-gray-800 transition-colors">
+                <a href="#"
+                    class="bg-black text-white px-5 py-2 rounded-lg flex items-center space-x-3 hover:bg-gray-800 transition-colors">
                     <i class="fab fa-apple text-3xl"></i>
                     <div>
                         <p class="text-xs -mb-1">Available on the</p>
@@ -116,7 +142,9 @@
                     </div>
                 </div>
             </div>
-            <a href="#pricing" class="bg-white text-red-600 font-bold py-4 px-8 rounded-full text-lg hover:bg-gray-100 transition-transform transform hover:scale-105">View Pricing Plans</a>
+            <a href="#pricing"
+                class="bg-white text-red-600 font-bold py-4 px-8 rounded-full text-lg hover:bg-gray-100 transition-transform transform hover:scale-105">View
+                Pricing Plans</a>
         </div>
     </section>
 
@@ -131,37 +159,43 @@
                 <div class="bg-white p-8 rounded-xl shadow-lg transition-all duration-300 feature-card">
                     <div class="text-4xl text-red-500 mb-4"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
                     <h3 class="text-2xl font-bold mb-2">AI-Generated Content</h3>
-                    <p class="text-gray-600">Generate captivating titles, detailed descriptions, and relevant tags in seconds. Our AI understands what makes customers click 'buy'.</p>
+                    <p class="text-gray-600">Generate captivating titles, detailed descriptions, and relevant tags in
+                        seconds. Our AI understands what makes customers click 'buy'.</p>
                 </div>
                 <!-- Feature 2 -->
                 <div class="bg-white p-8 rounded-xl shadow-lg transition-all duration-300 feature-card">
                     <div class="text-4xl text-red-500 mb-4"><i class="fas fa-chart-line"></i></div>
                     <h3 class="text-2xl font-bold mb-2">Dynamic Price Analysis</h3>
-                    <p class="text-gray-600">Price your products perfectly. We analyze real-time market data to suggest optimal pricing for maximum profit and quick sales.</p>
+                    <p class="text-gray-600">Price your products perfectly. We analyze real-time market data to suggest
+                        optimal pricing for maximum profit and quick sales.</p>
                 </div>
                 <!-- Feature 3 -->
                 <div class="bg-white p-8 rounded-xl shadow-lg transition-all duration-300 feature-card">
                     <div class="text-4xl text-red-500 mb-4"><i class="fas fa-layer-group"></i></div>
                     <h3 class="text-2xl font-bold mb-2">Bulk Listing Power</h3>
-                    <p class="text-gray-600">Have a whole inventory to upload? Drag, drop, and generate hundreds of listings at once. Your time is valuable.</p>
+                    <p class="text-gray-600">Have a whole inventory to upload? Drag, drop, and generate hundreds of
+                        listings at once. Your time is valuable.</p>
                 </div>
-                 <!-- Feature 4 -->
+                <!-- Feature 4 -->
                 <div class="bg-white p-8 rounded-xl shadow-lg transition-all duration-300 feature-card">
                     <div class="text-4xl text-red-500 mb-4"><i class="fas fa-store"></i></div>
                     <h3 class="text-2xl font-bold mb-2">Multi-Platform Support</h3>
-                    <p class="text-gray-600">Create listings tailored for any platform. From Amazon, Etsy, and TikTok Shop to Shopify, eBay, and Facebook Marketplace, we've got you covered.</p>
+                    <p class="text-gray-600">Create listings tailored for any platform. From Amazon, Etsy, and TikTok
+                        Shop to Shopify, eBay, and Facebook Marketplace, we've got you covered.</p>
                 </div>
-                 <!-- Feature 5 -->
+                <!-- Feature 5 -->
                 <div class="bg-white p-8 rounded-xl shadow-lg transition-all duration-300 feature-card">
                     <div class="text-4xl text-red-500 mb-4"><i class="fas fa-camera-retro"></i></div>
                     <h3 class="text-2xl font-bold mb-2">Image-First Workflow</h3>
-                    <p class="text-gray-600">Your photos are the star. Simply upload your product images, and our AI will handle the rest of the heavy lifting.</p>
+                    <p class="text-gray-600">Your photos are the star. Simply upload your product images, and our AI
+                        will handle the rest of the heavy lifting.</p>
                 </div>
-                 <!-- Feature 6 -->
+                <!-- Feature 6 -->
                 <div class="bg-white p-8 rounded-xl shadow-lg transition-all duration-300 feature-card">
                     <div class="text-4xl text-red-500 mb-4"><i class="fas fa-cogs"></i></div>
                     <h3 class="text-2xl font-bold mb-2">Custom Platform Builder</h3>
-                    <p class="text-gray-600">Perfect for your own e-commerce store. Define custom fields with your own keys and values to generate listings that perfectly match your site's structure.</p>
+                    <p class="text-gray-600">Perfect for your own e-commerce store. Define custom fields with your own
+                        keys and values to generate listings that perfectly match your site's structure.</p>
                 </div>
             </div>
         </section>
@@ -171,25 +205,35 @@
             <h2 class="text-4xl font-extrabold text-center text-gray-800 mb-12">Three Simple Steps to Success</h2>
             <div class="relative">
                 <!-- Dotted Line for Desktop -->
-                <div class="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-gray-300 border-t-2 border-dashed border-gray-400" style="transform: translateY(-50%);"></div>
+                <div class="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-gray-300 border-t-2 border-dashed border-gray-400"
+                    style="transform: translateY(-50%);"></div>
                 <div class="grid md:grid-cols-3 gap-12 relative">
                     <!-- Step 1 -->
                     <div class="text-center">
-                        <div class="bg-red-600 text-white w-20 h-20 rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-4 border-4 border-white shadow-lg">1</div>
+                        <div
+                            class="bg-red-600 text-white w-20 h-20 rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-4 border-4 border-white shadow-lg">
+                            1</div>
                         <h3 class="text-2xl font-bold mb-2">Upload Images</h3>
-                        <p class="text-gray-600">Select or drag & drop your product photos. Upload one or an entire batch.</p>
+                        <p class="text-gray-600">Select or drag & drop your product photos. Upload one or an entire
+                            batch.</p>
                     </div>
                     <!-- Step 2 -->
                     <div class="text-center">
-                        <div class="bg-red-600 text-white w-20 h-20 rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-4 border-4 border-white shadow-lg">2</div>
+                        <div
+                            class="bg-red-600 text-white w-20 h-20 rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-4 border-4 border-white shadow-lg">
+                            2</div>
                         <h3 class="text-2xl font-bold mb-2">AI Generates</h3>
-                        <p class="text-gray-600">Our AI analyzes your images and generates all listing content in seconds.</p>
+                        <p class="text-gray-600">Our AI analyzes your images and generates all listing content in
+                            seconds.</p>
                     </div>
                     <!-- Step 3 -->
                     <div class="text-center">
-                        <div class="bg-red-600 text-white w-20 h-20 rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-4 border-4 border-white shadow-lg">3</div>
+                        <div
+                            class="bg-red-600 text-white w-20 h-20 rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-4 border-4 border-white shadow-lg">
+                            3</div>
                         <h3 class="text-2xl font-bold mb-2">Review & Post</h3>
-                        <p class="text-gray-600">Quickly review, make any tweaks, and post directly to your chosen platform.</p>
+                        <p class="text-gray-600">Quickly review, make any tweaks, and post directly to your chosen
+                            platform.</p>
                     </div>
                 </div>
             </div>
@@ -198,39 +242,52 @@
         <!-- Pricing Section -->
         <section id="pricing" class="py-16">
             <h2 class="text-4xl font-extrabold text-center text-gray-800 mb-4">Choose Your Plan</h2>
-            <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">Simple, transparent pricing. Unlock the full power of Sellsnap and start selling more effectively today.</p>
+            <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">Simple, transparent pricing. Unlock the full
+                power of Sellsnap and start selling more effectively today.</p>
             <div class="flex flex-col lg:flex-row justify-center items-center gap-8">
                 <!-- Monthly Plan -->
-                <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 w-full max-w-sm text-center transform hover:scale-105 transition-transform duration-300">
+                <div
+                    class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 w-full max-w-sm text-center transform hover:scale-105 transition-transform duration-300">
                     <h3 class="text-2xl font-bold text-gray-800 mb-2">Monthly</h3>
                     <p class="text-gray-500 mb-6">Perfect for getting started.</p>
-                    <p class="text-5xl font-extrabold text-gray-900 mb-2">$14<span class="text-2xl font-medium">.99</span></p>
+                    <p class="text-5xl font-extrabold text-gray-900 mb-2">$14<span
+                            class="text-2xl font-medium">.99</span></p>
                     <p class="text-gray-600 mb-8">per month</p>
                     <ul class="text-left space-y-3 mb-8">
-                        <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-3"></i> Unlimited Listings</li>
-                        <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-3"></i> AI Content Generation</li>
-                        <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-3"></i> Dynamic Price Analysis</li>
-                        <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-3"></i> All Platforms</li>
+                        <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-3"></i> Unlimited
+                            Listings</li>
+                        <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-3"></i> AI Content
+                            Generation</li>
+                        <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-3"></i> Dynamic
+                            Price Analysis</li>
+                        <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-3"></i> All
+                            Platforms</li>
                     </ul>
-                    
+
                 </div>
 
                 <!-- Yearly Plan -->
-                <div class="bg-white p-8 rounded-xl shadow-2xl border-2 border-red-500 w-full max-w-sm text-center relative transform hover:scale-105 transition-transform duration-300">
+                <div
+                    class="bg-white p-8 rounded-xl shadow-2xl border-2 border-red-500 w-full max-w-sm text-center relative transform hover:scale-105 transition-transform duration-300">
                     <div class="absolute top-0 -mt-5 w-full flex justify-center">
                         <span class="bg-red-500 text-white text-sm font-bold px-4 py-1 rounded-full">BEST VALUE</span>
                     </div>
                     <h3 class="text-2xl font-bold text-red-600 mb-2">Yearly</h3>
                     <p class="text-gray-500 mb-6">Save over 25%!</p>
-                    <p class="text-5xl font-extrabold text-gray-900 mb-2">$125<span class="text-2xl font-medium">.99</span></p>
+                    <p class="text-5xl font-extrabold text-gray-900 mb-2">$125<span
+                            class="text-2xl font-medium">.99</span></p>
                     <p class="text-gray-600 mb-8">per year</p>
                     <ul class="text-left space-y-3 mb-8">
-                        <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-3"></i> Unlimited Listings</li>
-                        <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-3"></i> AI Content Generation</li>
-                        <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-3"></i> Dynamic Price Analysis</li>
-                        <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-3"></i> All Platforms</li>
+                        <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-3"></i> Unlimited
+                            Listings</li>
+                        <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-3"></i> AI Content
+                            Generation</li>
+                        <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-3"></i> Dynamic
+                            Price Analysis</li>
+                        <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-3"></i> All
+                            Platforms</li>
                     </ul>
-                    
+
                 </div>
             </div>
         </section>
@@ -238,9 +295,11 @@
         <!-- CTA Section -->
         <section id="cta" class="gradient-bg text-white rounded-2xl my-16 p-8 md:p-12 text-center">
             <h2 class="text-3xl sm:text-4xl font-extrabold mb-4">Ready to Revolutionize Your Workflow?</h2>
-            <p class="text-md sm:text-lg max-w-2xl mx-auto mb-8">Join thousands of sellers who are saving time and increasing sales with Sellsnap. Your next best sale is just a click away.</p>
+            <p class="text-md sm:text-lg max-w-2xl mx-auto mb-8">Join thousands of sellers who are saving time and
+                increasing sales with Sellsnap. Your next best sale is just a click away.</p>
             <div class="flex flex-col sm:flex-row justify-center items-center gap-4 my-8">
-                <a href="#" class="bg-black text-white px-5 py-2 rounded-lg flex items-center space-x-3 hover:bg-gray-800 transition-colors">
+                <a href="#"
+                    class="bg-black text-white px-5 py-2 rounded-lg flex items-center space-x-3 hover:bg-gray-800 transition-colors">
                     <i class="fab fa-apple text-3xl"></i>
                     <div>
                         <p class="text-xs -mb-1">Available on the</p>
@@ -255,7 +314,9 @@
                     </div>
                 </div>
             </div>
-            <a href="#pricing" class="bg-white text-red-600 font-bold py-3 px-6 rounded-full text-lg hover:bg-gray-100 transition-transform transform hover:scale-105">Start Selling Smarter Today</a>
+            <a href="#pricing"
+                class="bg-white text-red-600 font-bold py-3 px-6 rounded-full text-lg hover:bg-gray-100 transition-transform transform hover:scale-105">Start
+                Selling Smarter Today</a>
         </section>
 
     </main>
@@ -265,98 +326,143 @@
         <div class="container mx-auto px-6">
             <div class="text-center mb-12">
                 <h2 class="text-4xl font-extrabold text-gray-800">Frequently Asked Questions</h2>
-                <p class="mt-4 text-lg text-gray-600">Your questions, answered. Everything you need to know about Sellsnap.</p>
+                <p class="mt-4 text-lg text-gray-600">Your questions, answered. Everything you need to know about
+                    Sellsnap.</p>
             </div>
             <div class="max-w-3xl mx-auto" x-data="{ open: null }">
                 <div class="space-y-4">
                     <!-- Question 1 -->
                     <div>
-                        <button @click="open = open === 1 ? null : 1" class="w-full flex justify-between items-center text-left text-lg font-semibold text-gray-800 bg-white p-5 rounded-lg shadow-sm hover:shadow-md focus:outline-none">
+                        <button @click="open = open === 1 ? null : 1"
+                            class="w-full flex justify-between items-center text-left text-lg font-semibold text-gray-800 bg-white p-5 rounded-lg shadow-sm hover:shadow-md focus:outline-none">
                             <span>How can Sellsnap's AI improve my e-commerce sales?</span>
-                            <i class="fas fa-chevron-down transition-transform" :class="{ 'rotate-180': open === 1 }"></i>
+                            <i class="fas fa-chevron-down transition-transform"
+                                :class="{ 'rotate-180': open === 1 }"></i>
                         </button>
                         <div x-show="open === 1" x-collapse class="mt-2 p-5 bg-white rounded-lg shadow-inner">
-                            <p class="text-gray-600">Sellsnap uses advanced AI to generate highly persuasive, keyword-rich product titles and descriptions. This not only attracts more buyers but also improves your listings' visibility on search engines and marketplaces like Amazon, Shopify, and Etsy, leading to higher traffic and sales.</p>
+                            <p class="text-gray-600">Sellsnap uses advanced AI to generate highly persuasive,
+                                keyword-rich product titles and descriptions. This not only attracts more buyers but
+                                also improves your listings' visibility on search engines and marketplaces like Amazon,
+                                Shopify, and Etsy, leading to higher traffic and sales.</p>
                         </div>
                     </div>
                     <!-- Question 2 -->
                     <div>
-                        <button @click="open = open === 2 ? null : 2" class="w-full flex justify-between items-center text-left text-lg font-semibold text-gray-800 bg-white p-5 rounded-lg shadow-sm hover:shadow-md focus:outline-none">
+                        <button @click="open = open === 2 ? null : 2"
+                            class="w-full flex justify-between items-center text-left text-lg font-semibold text-gray-800 bg-white p-5 rounded-lg shadow-sm hover:shadow-md focus:outline-none">
                             <span>What platforms does Sellsnap support?</span>
-                            <i class="fas fa-chevron-down transition-transform" :class="{ 'rotate-180': open === 2 }"></i>
+                            <i class="fas fa-chevron-down transition-transform"
+                                :class="{ 'rotate-180': open === 2 }"></i>
                         </button>
                         <div x-show="open === 2" x-collapse class="mt-2 p-5 bg-white rounded-lg shadow-inner">
-                            <p class="text-gray-600">Sellsnap is designed for multi-platform e-commerce. It can generate optimized listings for all major platforms, including Shopify, Amazon, eBay, Etsy, WooCommerce, and Facebook Marketplace, ensuring your brand voice is consistent everywhere you sell.</p>
+                            <p class="text-gray-600">Sellsnap is designed for multi-platform e-commerce. It can generate
+                                optimized listings for all major platforms, including Shopify, Amazon, eBay, Etsy,
+                                WooCommerce, and Facebook Marketplace, ensuring your brand voice is consistent
+                                everywhere you sell.</p>
                         </div>
                     </div>
                     <!-- Question 3 -->
                     <div>
-                        <button @click="open = open === 3 ? null : 3" class="w-full flex justify-between items-center text-left text-lg font-semibold text-gray-800 bg-white p-5 rounded-lg shadow-sm hover:shadow-md focus:outline-none">
+                        <button @click="open = open === 3 ? null : 3"
+                            class="w-full flex justify-between items-center text-left text-lg font-semibold text-gray-800 bg-white p-5 rounded-lg shadow-sm hover:shadow-md focus:outline-none">
                             <span>Can I use Sellsnap to optimize my existing product listings?</span>
-                            <i class="fas fa-chevron-down transition-transform" :class="{ 'rotate-180': open === 3 }"></i>
+                            <i class="fas fa-chevron-down transition-transform"
+                                :class="{ 'rotate-180': open === 3 }"></i>
                         </button>
                         <div x-show="open === 3" x-collapse class="mt-2 p-5 bg-white rounded-lg shadow-inner">
-                            <p class="text-gray-600">Absolutely! You can easily import your existing product information into Sellsnap. Our AI will then analyze it and generate new, SEO-friendly titles and descriptions designed to boost performance and rank higher than your competitors.</p>
+                            <p class="text-gray-600">Absolutely! You can easily import your existing product information
+                                into Sellsnap. Our AI will then analyze it and generate new, SEO-friendly titles and
+                                descriptions designed to boost performance and rank higher than your competitors.</p>
                         </div>
                     </div>
                     <!-- Question 4 -->
                     <div>
-                        <button @click="open = open === 4 ? null : 4" class="w-full flex justify-between items-center text-left text-lg font-semibold text-gray-800 bg-white p-5 rounded-lg shadow-sm hover:shadow-md focus:outline-none">
+                        <button @click="open = open === 4 ? null : 4"
+                            class="w-full flex justify-between items-center text-left text-lg font-semibold text-gray-800 bg-white p-5 rounded-lg shadow-sm hover:shadow-md focus:outline-none">
                             <span>How does the AI Price Analysis feature work?</span>
-                            <i class="fas fa-chevron-down transition-transform" :class="{ 'rotate-180': open === 4 }"></i>
+                            <i class="fas fa-chevron-down transition-transform"
+                                :class="{ 'rotate-180': open === 4 }"></i>
                         </button>
                         <div x-show="open === 4" x-collapse class="mt-2 p-5 bg-white rounded-lg shadow-inner">
-                            <p class="text-gray-600">Our AI Price Analysis tool scans the market for similar products across different platforms. It provides you with real-time data on competitor pricing, helping you set a competitive yet profitable price point for your items to maximize your revenue.</p>
+                            <p class="text-gray-600">Our AI Price Analysis tool scans the market for similar products
+                                across different platforms. It provides you with real-time data on competitor pricing,
+                                helping you set a competitive yet profitable price point for your items to maximize your
+                                revenue.</p>
                         </div>
                     </div>
                     <!-- Question 5 -->
                     <div>
-                        <button @click="open = open === 5 ? null : 5" class="w-full flex justify-between items-center text-left text-lg font-semibold text-gray-800 bg-white p-5 rounded-lg shadow-sm hover:shadow-md focus:outline-none">
+                        <button @click="open = open === 5 ? null : 5"
+                            class="w-full flex justify-between items-center text-left text-lg font-semibold text-gray-800 bg-white p-5 rounded-lg shadow-sm hover:shadow-md focus:outline-none">
                             <span>Is Sellsnap suitable for beginners with no SEO experience?</span>
-                            <i class="fas fa-chevron-down transition-transform" :class="{ 'rotate-180': open === 5 }"></i>
+                            <i class="fas fa-chevron-down transition-transform"
+                                :class="{ 'rotate-180': open === 5 }"></i>
                         </button>
                         <div x-show="open === 5" x-collapse class="mt-2 p-5 bg-white rounded-lg shadow-inner">
-                            <p class="text-gray-600">Yes! Sellsnap is built for everyone, from e-commerce veterans to complete beginners. Our user-friendly interface makes it incredibly simple to generate professional, SEO-optimized listings without any prior technical knowledge. Let our AI do the heavy lifting for you.</p>
+                            <p class="text-gray-600">Yes! Sellsnap is built for everyone, from e-commerce veterans to
+                                complete beginners. Our user-friendly interface makes it incredibly simple to generate
+                                professional, SEO-optimized listings without any prior technical knowledge. Let our AI
+                                do the heavy lifting for you.</p>
                         </div>
                     </div>
                     <!-- Question 6 -->
                     <div>
-                        <button @click="open = open === 6 ? null : 6" class="w-full flex justify-between items-center text-left text-lg font-semibold text-gray-800 bg-white p-5 rounded-lg shadow-sm hover:shadow-md focus:outline-none">
+                        <button @click="open = open === 6 ? null : 6"
+                            class="w-full flex justify-between items-center text-left text-lg font-semibold text-gray-800 bg-white p-5 rounded-lg shadow-sm hover:shadow-md focus:outline-none">
                             <span>What makes Sellsnap different from other AI writing tools like ChatGPT?</span>
-                            <i class="fas fa-chevron-down transition-transform" :class="{ 'rotate-180': open === 6 }"></i>
+                            <i class="fas fa-chevron-down transition-transform"
+                                :class="{ 'rotate-180': open === 6 }"></i>
                         </button>
                         <div x-show="open === 6" x-collapse class="mt-2 p-5 bg-white rounded-lg shadow-inner">
-                            <p class="text-gray-600">While general AI tools can write text, Sellsnap is a specialized e-commerce solution. Our AI is fine-tuned specifically for creating high-converting product listings. It understands e-commerce trends, platform-specific keyword strategies, and consumer psychology to write content that sells.</p>
+                            <p class="text-gray-600">While general AI tools can write text, Sellsnap is a specialized
+                                e-commerce solution. Our AI is fine-tuned specifically for creating high-converting
+                                product listings. It understands e-commerce trends, platform-specific keyword
+                                strategies, and consumer psychology to write content that sells.</p>
                         </div>
                     </div>
                     <!-- Question 7 -->
                     <div>
-                        <button @click="open = open === 7 ? null : 7" class="w-full flex justify-between items-center text-left text-lg font-semibold text-gray-800 bg-white p-5 rounded-lg shadow-sm hover:shadow-md focus:outline-none">
+                        <button @click="open = open === 7 ? null : 7"
+                            class="w-full flex justify-between items-center text-left text-lg font-semibold text-gray-800 bg-white p-5 rounded-lg shadow-sm hover:shadow-md focus:outline-none">
                             <span>Can I generate listings in different languages?</span>
-                            <i class="fas fa-chevron-down transition-transform" :class="{ 'rotate-180': open === 7 }"></i>
+                            <i class="fas fa-chevron-down transition-transform"
+                                :class="{ 'rotate-180': open === 7 }"></i>
                         </button>
                         <div x-show="open === 7" x-collapse class="mt-2 p-5 bg-white rounded-lg shadow-inner">
-                            <p class="text-gray-600">Yes, Sellsnap supports generating listings in multiple languages. This allows you to easily expand your business globally and reach a wider international audience by creating localized content that resonates with buyers in different regions.</p>
+                            <p class="text-gray-600">Yes, Sellsnap supports generating listings in multiple languages.
+                                This allows you to easily expand your business globally and reach a wider international
+                                audience by creating localized content that resonates with buyers in different regions.
+                            </p>
                         </div>
                     </div>
                     <!-- Question 8 -->
                     <div>
-                        <button @click="open = open === 8 ? null : 8" class="w-full flex justify-between items-center text-left text-lg font-semibold text-gray-800 bg-white p-5 rounded-lg shadow-sm hover:shadow-md focus:outline-none">
+                        <button @click="open = open === 8 ? null : 8"
+                            class="w-full flex justify-between items-center text-left text-lg font-semibold text-gray-800 bg-white p-5 rounded-lg shadow-sm hover:shadow-md focus:outline-none">
                             <span>How does the bulk listing generator save time?</span>
-                            <i class="fas fa-chevron-down transition-transform" :class="{ 'rotate-180': open === 8 }"></i>
+                            <i class="fas fa-chevron-down transition-transform"
+                                :class="{ 'rotate-180': open === 8 }"></i>
                         </button>
                         <div x-show="open === 8" x-collapse class="mt-2 p-5 bg-white rounded-lg shadow-inner">
-                            <p class="text-gray-600">If you have a large inventory, our bulk listing feature is a massive time-saver. Simply upload a CSV file with your product details, and Sellsnap's AI will generate optimized listings for all your items at once, reducing hours of manual work to just a few minutes.</p>
+                            <p class="text-gray-600">If you have a large inventory, our bulk listing feature is a
+                                massive time-saver. Simply upload a CSV file with your product details, and Sellsnap's
+                                AI will generate optimized listings for all your items at once, reducing hours of manual
+                                work to just a few minutes.</p>
                         </div>
                     </div>
                     <!-- Question 9 -->
                     <div>
-                        <button @click="open = open === 9 ? null : 9" class="w-full flex justify-between items-center text-left text-lg font-semibold text-gray-800 bg-white p-5 rounded-lg shadow-sm hover:shadow-md focus:outline-none">
+                        <button @click="open = open === 9 ? null : 9"
+                            class="w-full flex justify-between items-center text-left text-lg font-semibold text-gray-800 bg-white p-5 rounded-lg shadow-sm hover:shadow-md focus:outline-none">
                             <span>What is your pricing model?</span>
-                            <i class="fas fa-chevron-down transition-transform" :class="{ 'rotate-180': open === 9 }"></i>
+                            <i class="fas fa-chevron-down transition-transform"
+                                :class="{ 'rotate-180': open === 9 }"></i>
                         </button>
                         <div x-show="open === 9" x-collapse class="mt-2 p-5 bg-white rounded-lg shadow-inner">
-                            <p class="text-gray-600">Sellsnap offers a simple and affordable subscription plan at $14.99 per month. This gives you unlimited access to all our features, including the AI listing generator, price analysis, bulk uploads, and multi-platform support, with no hidden fees.</p>
+                            <p class="text-gray-600">Sellsnap offers a simple and affordable subscription plan at $14.99
+                                per month. This gives you unlimited access to all our features, including the AI listing
+                                generator, price analysis, bulk uploads, and multi-platform support, with no hidden
+                                fees.</p>
                         </div>
                     </div>
                 </div>
@@ -380,8 +486,17 @@
                     <a href="/contact.html" class="hover:text-red-400">Contact</a>
                 </div>
                 <div class="flex space-x-4">
-                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-reddit fa-lg"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-tiktok fa-lg"></i></a>
+                    <a href="https://www.instagram.com/sellsnap_ai/#" target="_blank"
+                        class="text-gray-400 hover:text-white">
+                        <i class="fab fa-instagram fa-lg"></i>
+                    </a>
+                    <a href="https://x.com/Sellsnap_ai" target="_blank" class="text-gray-400 hover:text-white">
+                        <i class="fab fa-x-twitter fa-lg"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/@sellsnap.ai?_t=ZN-8y9WWXc9gEI&_r=1" target="_blank"
+                        class="text-gray-400 hover:text-white">
+                        <i class="fab fa-tiktok fa-lg"></i>
+                    </a>
                 </div>
             </div>
             <div class="text-center text-gray-500 mt-8 pt-4 border-t border-gray-700">
@@ -394,4 +509,5 @@
     <script defer src="https://unpkg.com/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </body>
+
 </html>

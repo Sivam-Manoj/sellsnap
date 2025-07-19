@@ -201,9 +201,13 @@ export const getAllListings = async (
 export const deleteListing = async (
   listingId: string,
   userId: string
-): Promise<boolean> => {
-  const result = await Listing.deleteOne({ _id: listingId, user: userId });
-  return result.deletedCount > 0;
+): Promise<void> => {
+  const result = await Listing.deleteOne({ _id: listingId, userId: userId });
+  if (result.deletedCount === 0) {
+    throw new Error(
+      "Listing not found or you do not have permission to delete it"
+    );
+  }
 };
 
 export const updateListing = async (
@@ -281,7 +285,11 @@ Please analyze this product on ${
 }
 
 Important:
-- Search for the **exact same product** on "${listing.platform}" or any directly related marketplaces if ${listing.platform} not available or not found.
+- Search for the **exact same product** on "${
+        listing.platform
+      }" or any directly related marketplaces if ${
+        listing.platform
+      } not available or not found.
 
 - While searching and comparing:
   • Use the following values to localize and match search results:
@@ -291,8 +299,12 @@ Important:
 
 - Identify active competitors, similar product listings, and available offers in that specific market.
 
-- **Convert all prices to "${listing.currency}" using the most recent exchange rates**.
-- **Return the entire JSON output in the "${listing.language}" language**, keeping the structure and field names in English but translating all descriptive content and values (e.g., product names, insights, discount descriptions).
+- **Convert all prices to "${
+        listing.currency
+      }" using the most recent exchange rates**.
+- **Return the entire JSON output in the "${
+        listing.language
+      }" language**, keeping the structure and field names in English but translating all descriptive content and values (e.g., product names, insights, discount descriptions).
 
 - Output must match the structure below exactly, with no additional text, explanations, or formatting outside the JSON.
 
