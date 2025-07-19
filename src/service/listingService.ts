@@ -18,10 +18,15 @@ export const generateListings = async (
 
   for (const platform of platforms) {
     try {
-      const platformDoc = await Platform.findOne({ name: platform, user: userId });
+      const platformDoc = await Platform.findOne({
+        name: platform,
+        user: userId,
+      });
       if (!platformDoc) {
-        console.warn(`Platform "${platform}" not found for user ${userId}. Skipping.`);
-        continue; 
+        console.warn(
+          `Platform "${platform}" not found for user ${userId}. Skipping.`
+        );
+        continue;
       }
 
       const systemMessage = platformDoc.systemMessage;
@@ -29,18 +34,30 @@ export const generateListings = async (
 
       const textMessage = {
         type: "text" as const,
-        text: `Generate a product listing based on the following details:
-      The output should be highly SEO optimized and should refer to the product shown in the image(s).
-      If image URLs are needed in the listing, use all the following URLs:
-      ${imageUrls.join(", ")}.
+        text: `Generate a product listing based on the details and images provided.
       
+      Instructions:
+      - Optimize the content specifically for the "${platform}" e-commerce platform.
+        If the platform is a custom or unknown platform, create the listing using general best practices for SEO and high conversion rates.
+      - The product images may be from various categories such as digital arts, apps/software, food & drinks, clothing & wearables, or others.
+      - Include and refer to the images only if the system message schema includes a corresponding field for images.
+      - Follow the exact field names, data types, and constraints specified in the system message.
+      - Ensure every field is written in a persuasive, engaging, and buyer-focused tone that encourages sales.
+      - Content should be mobile-optimized, keyword-rich, and highly SEO-friendly.
+      - The output must be a strictly valid JSON object matching the system message fields.
+      - Do NOT include any explanations, extra text, or formatting beyond the JSON object.
+      
+      Product Details:
       - Product: ${prompt || "the item in the image(s)"}
       - Platform: ${platform}
       - Language: ${language}
       - Country: ${country}
       - Currency: ${currency}
       
-      Please format the response strictly as a JSON object, following the system message instructions provided for this platform.`,
+      Image URLs (use only if image fields exist in the system message):
+      ${imageUrls.join(", ")}
+      
+      Return ONLY the JSON object as per the system message format.`,
       };
 
       try {
@@ -51,7 +68,7 @@ export const generateListings = async (
 
         const response = await openai.chat.completions.create({
           model: "gpt-4.1",
-          max_tokens: 16000,
+          max_tokens: 30000,
           messages: [
             { role: "system", content: systemMessage },
             { role: "user", content: [textMessage, ...imageMessagesFromUrls] },
@@ -60,10 +77,13 @@ export const generateListings = async (
         });
         choice = response.choices[0];
       } catch (error) {
-        console.warn("Image URL approach failed. Falling back to raw image data.", error);
+        console.warn(
+          "Image URL approach failed. Falling back to raw image data.",
+          error
+        );
         const imageMessagesFromFiles = files.map((file) => {
-                    const absolutePath = path.resolve(file.path);
-          const imageAsBase64 = fs.readFileSync(absolutePath, 'base64');
+          const absolutePath = path.resolve(file.path);
+          const imageAsBase64 = fs.readFileSync(absolutePath, "base64");
           return {
             type: "image_url" as const,
             image_url: { url: `data:${file.mimetype};base64,${imageAsBase64}` },
@@ -72,7 +92,7 @@ export const generateListings = async (
 
         const response = await openai.chat.completions.create({
           model: "gpt-4.1",
-          max_tokens: 16000,
+          max_tokens: 30000,
           messages: [
             { role: "system", content: systemMessage },
             { role: "user", content: [textMessage, ...imageMessagesFromFiles] },
@@ -85,7 +105,9 @@ export const generateListings = async (
       const listingContent = choice.message.content;
       if (!listingContent) {
         const finishReason = choice.finish_reason;
-        console.error(`AI failed to generate content for platform ${platform}. Finish Reason: ${finishReason}`);
+        console.error(
+          `AI failed to generate content for platform ${platform}. Finish Reason: ${finishReason}`
+        );
         continue;
       }
 
@@ -95,18 +117,26 @@ export const generateListings = async (
         userId: userId,
         platform: platform,
         imageUrls: imageUrls,
+        country: country,
+        currency: currency,
+        language: language,
       });
 
       await newListing.save();
       createdListings.push(newListing);
     } catch (error) {
-      console.error(`Error generating listing for platform ${platform}:`, error);
+      console.error(
+        `Error generating listing for platform ${platform}:`,
+        error
+      );
       // Decide if one failure should stop the whole process. For now, we'll just log and continue.
     }
   }
 
   if (createdListings.length === 0) {
-    throw new Error("Failed to generate any listings. Please check the platforms and try again.");
+    throw new Error(
+      "Failed to generate any listings. Please check the platforms and try again."
+    );
   }
 
   return createdListings;
@@ -210,8 +240,8 @@ You are an AI e-commerce pricing analyst.
 
 Your task is to analyze the product listing below and provide competitive pricing insights using real-time data.
 
-Here is the product listing:
-${JSON.stringify(listing)}
+Here is the product listing data:
+${JSON.stringify(listing.listingData)}
 
 Platform: ${listing.platform}
 
@@ -251,14 +281,21 @@ Please analyze this product on ${
 }
 
 Important:
-- "Similar products" means the *exact same product* being sold by other sellers on ${
-        listing.platform
-      }, not different variations or alternatives.
-- All pricing data should be based strictly on ${
-        listing.platform
-      } or very closely related marketplaces (like Amazon sellers or Etsy shops).
-- Only return a valid, clean JSON object as per the structure above.
-- Your goal is to help competitively price this listing for better visibility and conversion.
+- Search for the **exact same product** on "${listing.platform}" or any directly related marketplaces if ${listing.platform} not available or not found.
+
+- While searching and comparing:
+  • Use the following values to localize and match search results:
+    - Country: ${listing.country}
+    - Currency: ${listing.currency}
+    - Language: ${listing.language}
+
+- Identify active competitors, similar product listings, and available offers in that specific market.
+
+- **Convert all prices to "${listing.currency}" using the most recent exchange rates**.
+- **Return the entire JSON output in the "${listing.language}" language**, keeping the structure and field names in English but translating all descriptive content and values (e.g., product names, insights, discount descriptions).
+
+- Output must match the structure below exactly, with no additional text, explanations, or formatting outside the JSON.
+
 `,
     });
 

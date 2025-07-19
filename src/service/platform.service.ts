@@ -6,6 +6,14 @@ export const generateSystemMessage = async (
   fields: IField[],
   extraPoints: string
 ): Promise<string> => {
+  const staticSampleJson = `
+{
+  "field1": "Example content formatted based on the expected type and writing style.",
+  "field2": "Another example value that follows persuasive, clear, and SEO-friendly writing.",
+  "field3": "Content here should match the required structure, tone, and formatting rules."
+}
+`;
+
   const fieldsList = fields
     .map((f) => {
       const base = `- ${f.name}: type "${f.format}"`;
@@ -15,11 +23,11 @@ export const generateSystemMessage = async (
     })
     .join("\n");
 
-  const userPrompt = `
-  You are a professional AI copywriter and e-commerce assistant.
+  const systemPrompt = `
+  You are a professional AI prompt engineer and e-commerce listing assistant.
   
   Please generate a SYSTEM MESSAGE that instructs the AI to:
-  - Create SEO-friendly, high-converting product listings for the e-commerce platform "${platformName}".
+  - Create SEO-friendly, high-converting product listings for the e-commerce platform "${platformName}".//very important
   - Format output as a valid JSON object with these fields:
   ${fieldsList}
   
@@ -31,15 +39,17 @@ export const generateSystemMessage = async (
   ${extraPoints ? `Extra guidelines: ${extraPoints}` : ""}
   
  don't forgot to include the sample json object in the system message based on the fields.
+ here is the sample json object:
+ ${staticSampleJson}
   Return the SYSTEM MESSAGE only.
   `;
 
   const response = await openai.chat.completions.create({
-    model: "gpt-4o",
+    model: "gpt-4.1",
     messages: [
       {
-        role: "user",
-        content: userPrompt,
+        role: "system",
+        content: systemPrompt,
       },
     ],
   });
@@ -95,8 +105,18 @@ export const getPlatforms = async (userId: string): Promise<IPlatform[]> => {
   }
 };
 
-export const updatePlatform = async (platformId: string, userId: string, updateData: Partial<IPlatform>): Promise<IPlatform | null> => {
+export const updatePlatform = async (
+  platformId: string,
+  userId: string,
+  updateData: Partial<IPlatform>
+): Promise<IPlatform | null> => {
   try {
+    const systemMessage = await generateSystemMessage(
+      updateData.name as string,
+      updateData.fields as IField[],
+      updateData.extraPoints as string
+    );
+    updateData.systemMessage = systemMessage;
     const platform = await Platform.findOneAndUpdate(
       { _id: platformId, user: userId },
       { $set: updateData },
@@ -112,10 +132,10 @@ export const updatePlatform = async (platformId: string, userId: string, updateD
 export const deletePlatform = async (platformId: string, userId: string) => {
   const platform = await Platform.findOne({ _id: platformId, user: userId });
   if (!platform) {
-    throw new Error('Platform not found or user not authorized');
+    throw new Error("Platform not found or user not authorized");
   }
   await platform.deleteOne();
-  return { message: 'Platform deleted successfully' };
+  return { message: "Platform deleted successfully" };
 };
 
 export const getRecentPlatforms = async (userId: string) => {
@@ -135,10 +155,10 @@ export const getAvailablePlatforms = async (userId: string) => {
     const globalPlatforms = await Platform.find({ user: null });
     const userPlatforms = await Platform.find({ user: userId });
 
-    const userPlatformNames = userPlatforms.map(p => p.name);
+    const userPlatformNames = userPlatforms.map((p) => p.name);
 
     const availablePlatforms = globalPlatforms.filter(
-      p => !userPlatformNames.includes(p.name)
+      (p) => !userPlatformNames.includes(p.name)
     );
 
     return availablePlatforms;
@@ -148,17 +168,23 @@ export const getAvailablePlatforms = async (userId: string) => {
   }
 };
 
-export const addPlatformFromGlobal = async (platformId: string, userId: string) => {
+export const addPlatformFromGlobal = async (
+  platformId: string,
+  userId: string
+) => {
   try {
-    const globalPlatform = await Platform.findOne({ _id: platformId, user: null });
+    const globalPlatform = await Platform.findOne({
+      _id: platformId,
+      user: null,
+    });
 
     if (!globalPlatform) {
       return null; // Global platform not found
     }
 
-    const existingUserPlatform = await Platform.findOne({ 
-      name: globalPlatform.name, 
-      user: userId 
+    const existingUserPlatform = await Platform.findOne({
+      name: globalPlatform.name,
+      user: userId,
     });
 
     if (existingUserPlatform) {

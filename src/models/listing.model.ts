@@ -9,6 +9,9 @@ export interface IListing extends Document {
     finalPrice?: number; // Optional field
     createdAt: Date;
     updatedAt: Date;
+    country: string;
+    currency: string;
+    language: string;
 }
 
 const ListingSchema: Schema = new Schema(
@@ -25,6 +28,18 @@ const ListingSchema: Schema = new Schema(
         imageUrls: {
             type: [String],
             required: false,
+        },
+        country: {
+            type: String,
+            required: true,
+        },
+        currency: {
+            type: String,
+            required: true,
+        },
+        language: {
+            type: String,
+            required: true,
         },
         platform: {
             type: String,
