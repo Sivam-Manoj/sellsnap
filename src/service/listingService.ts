@@ -236,44 +236,46 @@ export const getRealtimePriceDetails = async (listing: IListing) => {
       tools: [
         {
           type: "web_search_preview",
-          search_context_size: "high", // or "high" if needed
+          search_context_size: "high",
         },
       ],
       input: `
-You are an AI e-commerce pricing analyst.
+You are an AI e-commerce pricing and SEO analyst.
 
-Your task is to analyze the product listing below and provide competitive pricing insights using real-time data.
+Your job is to analyze the product listing below using real-time web data and generate:
+- Competitive pricing insights
+- Real-time trending keywords
+- SEO-optimized meta tags
+- Relevant product tags
 
-Here is the product listing data:
+Here is the product listing:
 ${JSON.stringify(listing.listingData)}
 
 Platform: ${listing.platform}
 
-Please analyze this product on ${
+Use real-time search and the latest product data on "${
         listing.platform
-      } and return a JSON response with the following structure:
+      }" (or a similar marketplace) to generate this structured JSON output:
 
 {
-  "average_price": number, // The average price of the exact same product sold on ${
-    listing.platform
-  }
-  "competitors": [         // Competitor listings offering the same product
+  "average_price": number,
+  "competitors": [
     {
-      "name": string,      // Competitor product or seller name
-      "price": number,     // Price of the competitor's product
-      "url": string        // Link to the competitor's listing
+      "name": string,
+      "price": number,
+      "url": string
     }
   ],
-  "notable_offers": [      // Special deals or discounts on the same product
+  "notable_offers": [
     {
-      "product": string,   // Product name with an offer
-      "discount": string,  // Description of the discount (e.g., "20% off", "Free shipping")
-      "price": number,     // Discounted price
-      "url": string        // Product URL
+      "product": string,
+      "discount": string,
+      "price": number,
+      "url": string
     }
   ],
-  "pricing_suggestion": number, // The recommended optimal price to stay competitive and maximize sales
-  "similar_products": [         // Other listings of the *exact same product* sold by different sellers on the same platform
+  "pricing_suggestion": number,
+  "similar_products": [
     {
       "product_title": string,
       "price": number,
@@ -281,33 +283,39 @@ Please analyze this product on ${
       "url": string
     }
   ],
-  "insights": string // A short summary explaining the pricing recommendation, trends, or strategy
+  "insights": string,
+  "seo_keywords": [           // Extract these from real-time search result titles, meta keywords, and product tags
+    string
+  ],
+  "meta_tags": {              // Use real-time SEO best practices and extracted site data
+    "title": string,          // SEO-optimized title based on top-ranking pages
+    "description": string,    // Meta description that encourages click-through
+    "keywords": string        // Comma-separated keywords based on actual web data
+  },
+  "product_tags": [           // Real-time tags and categories extracted from competing listings, tags, or metadata
+    string
+  ]
 }
 
-Important:
-- Search for the **exact same product** on "${
+Instructions:
+- Search for the **exact same product** or model on "${
         listing.platform
-      }" or any directly related marketplaces if ${
-        listing.platform
-      } not available or not found.
-
-- While searching and comparing:
-  • Use the following values to localize and match search results:
-    - Country: ${listing.country}
-    - Currency: ${listing.currency}
-    - Language: ${listing.language}
-
-- Identify active competitors, similar product listings, and available offers in that specific market.
-
-- **Convert all prices to "${
-        listing.currency
-      }" using the most recent exchange rates**.
-- **Return the entire JSON output in the "${
+      }" and related e-commerce platforms if needed.
+- Use the following values for accurate localization:
+  - Country: ${listing.country}
+  - Currency: ${listing.currency}
+  - Language: ${listing.language}
+- Pull tags, keywords, and meta data from:
+  • Product page meta tags
+  • Blog posts and guides
+  • Top search engine snippets
+  • Competitor eBay, Amazon, Shopify, or Etsy listings
+- Use only **real-time, trending**, and **popular tags or keywords** used in the product's niche.
+- Convert all prices to "${listing.currency}".
+- Return all text and descriptions in "${
         listing.language
-      }" language**, keeping the structure and field names in English but translating all descriptive content and values (e.g., product names, insights, discount descriptions).
-
-- Output must match the structure below exactly, with no additional text, explanations, or formatting outside the JSON.
-
+      }", but keep all keys/field names in English.
+- Output must match the exact JSON structure above — no extra text, no explanations.
 `,
     });
 

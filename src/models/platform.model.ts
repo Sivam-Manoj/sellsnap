@@ -2,7 +2,7 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IField {
   name: string;
-  format: 'text' | 'number' | 'list';
+  format: 'text' | 'number' | 'list' | 'boolean' | 'json';
   maxLength: string;
   maxLengthEnabled: boolean;
 }
@@ -18,7 +18,7 @@ export interface IPlatform extends Document {
 const fieldSchema = new Schema<IField>(
   {
     name: { type: String, required: true },
-    format: { type: String, required: true, enum: ['text', 'number', 'list'] },
+        format: { type: String, required: true, enum: ['text', 'number', 'list', 'boolean', 'json'] },
     maxLength: { type: String, required: false },
     maxLengthEnabled: { type: Boolean, required: true, default: true },
   },

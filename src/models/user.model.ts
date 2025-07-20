@@ -22,10 +22,15 @@ const userSchema = new mongoose.Schema({
     unique: true,
     sparse: true,
   },
+  appleId: {
+    type: String,
+    unique: true,
+    sparse: true,
+  },
   authProvider: {
     type: String,
     required: true,
-    enum: ['email', 'google'],
+    enum: ['email', 'google', 'apple'],
     default: 'email',
   },
   isVerified: {
