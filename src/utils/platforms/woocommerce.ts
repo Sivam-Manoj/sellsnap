@@ -71,7 +71,7 @@ Instructions:
 Sample JSON:
 {
   "ID": 1234,
-  "post_title": "EcoBrew Reusable Coffee Cup - 16oz, Leakproof, BPA-Free",
+  "post_title": "EcoBrew Reusable Coffee Cup - 16oz Travel Mug, Leakproof & BPA-Free for Hot & Cold Drinks", // SEO-optimized with keywords like 'reusable coffee cup', '16oz travel mug', 'leakproof', and 'BPA-free', uniquely targeting eco-conscious coffee lovers and commuters
   "post_content": "<p>Enjoy your coffee sustainably with the EcoBrew Reusable Cup. Features leakproof lid, double-wall insulation, and eco-friendly materials. Dishwasher safe.</p>",
   "post_excerpt": "Sustainable, leakproof, and stylish reusable coffee cup. Perfect for on-the-go!",
   "sku": "ECOBREW-16OZ",

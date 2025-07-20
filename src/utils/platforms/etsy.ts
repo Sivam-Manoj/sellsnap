@@ -109,7 +109,7 @@ Instructions:
 
 Sample JSON:
 {
-  "title": "Personalized Sterling Silver Name Necklace - Custom Handmade Jewelry Gift",
+  "title": "Personalized Sterling Silver Name Necklace - Custom Handmade Jewelry Gift for Her", // SEO-optimized with high-converting keywords like 'personalized necklace', 'sterling silver', 'custom jewelry gift', uniquely targeting occasions like birthdays, anniversaries, and holidays
   "description": "This beautiful sterling silver name necklace is handmade to order in our artisan studio. Perfect for birthdays, anniversaries, or as a unique bridesmaid gift. Each piece is crafted with love and attention to detail.\n\n- Material: 925 Sterling Silver\n- Chain Length: 18 inches\n- Handmade in California\n\n🎁 Gift wrapping available!\n\nCare Instructions: Polish gently with a soft cloth. Avoid exposure to chemicals.",
   "price": 39.99,
   "quantity": 10,

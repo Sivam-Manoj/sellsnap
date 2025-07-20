@@ -2,15 +2,15 @@ export const tiktokPlatform = {
   name: "TikTok Shop",
   fields: [
     {
-      name: "product_id",
-      format: "text",
-      maxLength: "64",
-      maxLengthEnabled: true,
-    },
-    {
       name: "product_name",
       format: "text",
       maxLength: "120",
+      maxLengthEnabled: true,
+    },
+    {
+      name: "product_id",
+      format: "text",
+      maxLength: "64",
       maxLengthEnabled: true,
     },
     {
@@ -59,8 +59,8 @@ Instructions:
 
 Sample JSON:
 {
+  "product_name": "GlowUp LED Vanity Mirror - Touch Sensor Makeup Mirror with Adjustable Brightness & Smart Dimming", // Fully SEO-optimized with keywords like 'LED vanity mirror', 'touch sensor', 'adjustable brightness', and unique value for makeup and beauty lovers
   "product_id": "1234567890",
-  "product_name": "GlowUp LED Vanity Mirror - Touch Sensor, Adjustable Brightness",
   "description": "Get flawless makeup every time with our GlowUp LED Vanity Mirror. Features adjustable brightness, touch controls, and a sleek, portable design. Perfect for home or travel!",
   "category_id": 1002001,
   "brand": "GlowUp",
@@ -77,6 +77,5 @@ Sample JSON:
 
 Make sure the listing is optimized for TikTok's algorithm to maximize visibility, engagement, and sales in a social commerce environment. Use only real TikTok Shop field names for compatibility with product import tools and APIs.
 `,
-
   user: null,
 };

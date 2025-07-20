@@ -259,7 +259,7 @@ export const ebayPlatform = {
     📦 SAMPLE JSON OUTPUT:
     
     {
-      "Title": "Apple iPhone 13 Pro Max 256GB Sierra Blue Unlocked - 95% Battery",
+      "Title": "Apple iPhone 13 Pro Max 256GB Sierra Blue Unlocked - 95% Battery Health - Excellent Condition", // SEO-optimized with high-intent keywords like 'iPhone 13 Pro Max', '256GB', 'unlocked', and '95% battery health', uniquely appealing to buyers seeking premium refurbished Apple devices
       "Subtitle": "Excellent Condition – Fully Functional – Free Fast Shipping!",
       "Description": "<body style='font-family: Arial, sans-serif;'><h2 style='color:#2e6c80;'>📦 Product Overview</h2><p>This <strong>Apple iPhone 13 Pro Max</strong> is in <strong>excellent condition</strong> with minor wear. Fully tested and 100% functional.</p><h3>🔍 Key Features:</h3><ul><li>📱 Model: iPhone 13 Pro Max</li><li>💾 Storage: 256GB</li><li>🎨 Color: Sierra Blue</li><li>🔓 Unlocked for All Networks (CDMA + GSM)</li><li>🔋 Battery Health: 95%</li><li>📦 Includes: Original Box + Lightning Cable</li></ul><h3>📸 Condition & Authenticity</h3><p>This phone shows minimal signs of use. Screen is in great shape, body has only light wear. Cleaned and sanitized professionally.</p><h3>🚚 Shipping & Handling</h3><ul><li>✅ Free USPS Ground Advantage</li><li>📦 Ships within 1 business day</li><li>📍 From: San Jose, CA</li></ul><h3>💳 Payment</h3><p>We accept PayPal. Payment is expected within 48 hours.</p><h3>🔁 Returns</h3><p>30-day return policy. Buyer pays return shipping unless item is not as described.</p><hr><p style='text-align:center;'>🛒 <strong>Buy with Confidence – Trusted Seller!</strong></p></body>",
       "SKU": "IP13PM-256-SB-UL-E1",

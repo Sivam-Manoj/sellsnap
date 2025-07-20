@@ -214,7 +214,7 @@ Sample JSON:
   "item_sku": "AMZ-LED-LAMP-01",
   "external_product_id": "123456789012",
   "external_product_id_type": "UPC",
-  "item_name": "LumiGlow LED Desk Lamp - Dimmable, USB Charging, Adjustable Arm",
+  "item_name": "LumiGlow LED Desk Lamp - Dimmable Light with USB Charging Port & Adjustable Arm for Home Office", // SEO-optimized using key terms like 'LED desk lamp', 'dimmable', 'USB charging', and 'adjustable arm', uniquely positioned for productivity, reading, and workspace lighting
   "brand_name": "LumiGlow",
   "product_description": "Illuminate your workspace with the LumiGlow LED Desk Lamp. Features touch dimming, USB charging port, and a fully adjustable arm for perfect lighting at any angle.",
   "feed_product_type": "home_lighting",

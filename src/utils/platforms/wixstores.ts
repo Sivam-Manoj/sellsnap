@@ -1,6 +1,7 @@
 export const wixStoresPlatform = {
   name: "Wix Stores",
   fields: [
+    { name: "name", format: "text", maxLength: "255", maxLengthEnabled: true },
     {
       name: "handleId",
       format: "text",
@@ -13,7 +14,6 @@ export const wixStoresPlatform = {
       maxLength: "20",
       maxLengthEnabled: true,
     }, // 'Product' or 'Variant'
-    { name: "name", format: "text", maxLength: "255", maxLengthEnabled: true },
     {
       name: "description",
       format: "text",
@@ -275,9 +275,9 @@ Instructions:
 
 Sample JSON:
 {
+  "name": "Custom T-Shirt with Scanned Image - Personalized Art, Handwriting, or Logo Shirt", // Fully SEO-optimized and uniquely positioned to feature scanned drawings, handwritten notes, or logos as wearable designs
   "handleId": "custom-tshirt-001",
   "fieldType": "Product",
-  "name": "Custom T-Shirt",
   "description": "A soft, comfortable t-shirt you can personalize with your own text or image.",
   "productImageUrl": "https://example.com/image1.jpg;https://example.com/image2.jpg",
   "collection": "T-Shirts;Custom Gifts",

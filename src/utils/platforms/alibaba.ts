@@ -125,7 +125,7 @@ Instructions:
 
 Sample JSON:
 {
-  "Product Name": "Eco-Friendly Bamboo Toothbrush",
+  "Product Name": "Eco-Friendly Bamboo Toothbrush - Biodegradable Natural Soft Bristles for Sustainable Oral Care", // SEO-optimized with keywords like 'eco-friendly', 'bamboo toothbrush', 'biodegradable', and 'sustainable oral care', uniquely appealing to zero-waste and environmentally conscious consumers
   "Category": "Personal Care > Oral Hygiene",
   "Keywords": "bamboo, toothbrush, eco-friendly, biodegradable, oral care",
   "Description": "Our bamboo toothbrush offers a sustainable alternative to plastic brushes. Made from 100% biodegradable bamboo, soft BPA-free bristles, and eco-friendly packaging.",
