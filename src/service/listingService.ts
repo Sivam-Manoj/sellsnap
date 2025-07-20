@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 import Listing, { IListing } from "../models/listing.model.js";
 import Platform from "../models/platform.model.js";
+import TotalTokens from "../models/totalTokens.model.js";
 
 export const generateListings = async (
   prompt: string,
@@ -27,6 +28,12 @@ export const generateListings = async (
           `Platform "${platform}" not found for user ${userId}. Skipping.`
         );
         continue;
+      }
+
+      let totalTokens = await TotalTokens.findOne();
+      if (!totalTokens) {
+        totalTokens = new TotalTokens({ totalTokens: 0 });
+        await totalTokens.save();
       }
 
       const systemMessage = platformDoc.systemMessage;
@@ -76,6 +83,10 @@ export const generateListings = async (
           response_format: { type: "json_object" },
         });
         choice = response.choices[0];
+        if (response.usage?.total_tokens) {
+          totalTokens.totalTokens += response.usage.total_tokens;
+          await totalTokens.save();
+        }
       } catch (error) {
         console.warn(
           "Image URL approach failed. Falling back to raw image data.",
@@ -100,6 +111,10 @@ export const generateListings = async (
           response_format: { type: "json_object" },
         });
         choice = response.choices[0];
+        if (response.usage?.total_tokens) {
+          totalTokens.totalTokens += response.usage.total_tokens;
+          await totalTokens.save();
+        }
       }
 
       const listingContent = choice.message.content;
@@ -230,6 +245,12 @@ export const updateListing = async (
 };
 
 export const getRealtimePriceDetails = async (listing: IListing) => {
+  let totalTokens = await TotalTokens.findOne();
+  if (!totalTokens) {
+    totalTokens = new TotalTokens({ totalTokens: 0 });
+    await totalTokens.save();
+  }
+
   try {
     const response = await openai.responses.create({
       model: "gpt-4.1",
@@ -318,6 +339,10 @@ Instructions:
 - Output must match the exact JSON structure above — no extra text, no explanations.
 `,
     });
+    if (response.usage?.total_tokens) {
+      totalTokens.totalTokens += response.usage.total_tokens;
+      await totalTokens.save();
+    }
 
     console.log(response.output_text);
     return response.output_text;

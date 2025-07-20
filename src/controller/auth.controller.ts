@@ -43,20 +43,16 @@ export const signup = async (req: Request, res: Response) => {
 
     try {
       await sendVerificationCode(email, verificationCode);
-      res
-        .status(201)
-        .json({
-          message:
-            "Signup successful. Please check your email for a verification code.",
-        });
+      res.status(201).json({
+        message:
+          "Signup successful. Please check your email for a verification code.",
+      });
     } catch (emailError) {
       console.error("Failed to send verification email:", emailError);
       // Optional: Decide if you want to proceed without email verification or return an error
-      res
-        .status(500)
-        .json({
-          message: "User created, but failed to send verification email.",
-        });
+      res.status(500).json({
+        message: "User created, but failed to send verification email.",
+      });
     }
   } catch (error) {
     console.log(error);
@@ -138,12 +134,10 @@ export const googleSignIn = async (req: Request, res: Response) => {
     if (!user) {
       const existingUser = await User.findOne({ email });
       if (existingUser) {
-        return res
-          .status(400)
-          .json({
-            message:
-              "An account with this email already exists. Please sign in with your password.",
-          });
+        return res.status(400).json({
+          message:
+            "An account with this email already exists. Please sign in with your password.",
+        });
       }
 
       user = new User({
@@ -168,13 +162,11 @@ export const googleSignIn = async (req: Request, res: Response) => {
     user.refreshToken = refreshToken;
     await user.save();
 
-    res
-      .status(200)
-      .json({
-        accessToken,
-        refreshToken,
-        user: { id: user._id, email: user.email, username: user.username },
-      });
+    res.status(200).json({
+      accessToken,
+      refreshToken,
+      user: { id: user._id, email: user.email, username: user.username },
+    });
   } catch (error) {
     console.error("Google Sign-In Error:", error);
     res.status(500).json({ message: "Google Sign-In failed" });
@@ -224,13 +216,11 @@ export const verifyEmail = async (req: Request, res: Response) => {
     user.refreshToken = refreshToken;
     await user.save();
 
-    res
-      .status(200)
-      .json({
-        message: "Email verified successfully.",
-        accessToken,
-        refreshToken,
-      });
+    res.status(200).json({
+      message: "Email verified successfully.",
+      accessToken,
+      refreshToken,
+    });
   } catch (error) {
     console.error("Email Verification Error:", error);
     res
@@ -263,18 +253,14 @@ export const resendVerificationCode = async (req: Request, res: Response) => {
 
     await sendVerificationCode(email, verificationCode);
 
-    res
-      .status(200)
-      .json({
-        message: "A new verification code has been sent to your email.",
-      });
+    res.status(200).json({
+      message: "A new verification code has been sent to your email.",
+    });
   } catch (error) {
     console.error("Resend Verification Code Error:", error);
-    res
-      .status(500)
-      .json({
-        message: "Something went wrong while resending the verification code.",
-      });
+    res.status(500).json({
+      message: "Something went wrong while resending the verification code.",
+    });
   }
 };
 
@@ -311,12 +297,10 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
     if (!user) {
       // To prevent user enumeration, we send a generic success message even if the user doesn't exist.
-      return res
-        .status(200)
-        .json({
-          message:
-            "If an account with that email exists, a password reset link has been sent.",
-        });
+      return res.status(200).json({
+        message:
+          "If an account with that email exists, a password reset link has been sent.",
+      });
     }
 
     // Generate a reset token that will be sent to the user.
@@ -340,27 +324,21 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
     await sendPasswordResetLink(user.email, resetUrl);
 
-    res
-      .status(200)
-      .json({
-        message:
-          "If an account with that email exists, a password reset link has been sent.",
-      });
+    res.status(200).json({
+      message:
+        "If an account with that email exists, a password reset link has been sent.",
+    });
   } catch (error) {
     console.error("Forgot Password Error:", error);
     // Do not reveal specific errors to the client.
-    res
-      .status(200)
-      .json({
-        message:
-          "If an account with that email exists, a password reset link has been sent.",
-      });
+    res.status(200).json({
+      message:
+        "If an account with that email exists, a password reset link has been sent.",
+    });
   }
 };
 
 export const appleSignIn = async (req: Request, res: Response) => {
-  console.log('Apple Sign-In request received');
-  console.log('Request body:', req.body);
   const { token, fullName } = req.body;
 
   if (!process.env.APPLE_CLIENT_ID) {
@@ -371,17 +349,18 @@ export const appleSignIn = async (req: Request, res: Response) => {
   }
 
   try {
-    console.log('Verifying Apple token...');
+    console.log("Verifying Apple token...");
     // Allow Expo Go client ID during development
-    const audience = process.env.NODE_ENV === 'development'
-      ? [process.env.APPLE_CLIENT_ID, 'host.exp.Exponent']
-      : process.env.APPLE_CLIENT_ID;
+    const audience =
+      process.env.NODE_ENV === "development"
+        ? [process.env.APPLE_CLIENT_ID, "host.exp.Exponent"]
+        : process.env.APPLE_CLIENT_ID;
 
     const claims = await appleAuth.verifyIdToken(token, {
       audience: audience,
       ignoreExpiration: true, // Recommended for server-side validation
     });
-    console.log('Apple token verified successfully. Claims:', claims);
+    console.log("Apple token verified successfully. Claims:", claims);
     const { sub: appleId, email } = claims;
 
     let user = await User.findOne({ appleId });
@@ -389,17 +368,15 @@ export const appleSignIn = async (req: Request, res: Response) => {
     if (!user) {
       const existingUser = await User.findOne({ email });
       if (existingUser) {
-        return res
-          .status(400)
-          .json({
-            message:
-              "An account with this email already exists. Please sign in with your original method.",
-          });
+        return res.status(400).json({
+          message:
+            "An account with this email already exists. Please sign in with your original method.",
+        });
       }
 
       // Note: Apple only provides name on the first sign-in.
       // The client can optionally send it if available.
-      const username = fullName || email.split("@")[0];
+      const username = fullName !== null ? fullName : email.split("@")[0];
 
       user = new User({
         appleId,
@@ -426,7 +403,10 @@ export const appleSignIn = async (req: Request, res: Response) => {
 
     res.status(200).json({ accessToken, refreshToken });
   } catch (error) {
-    console.error('Apple Sign-In Error - Something went wrong in the try block:', error);
+    console.error(
+      "Apple Sign-In Error - Something went wrong in the try block:",
+      error
+    );
     res
       .status(500)
       .json({ message: "Something went wrong during Apple Sign-In." });
@@ -478,13 +458,11 @@ export const resetPassword = async (req: Request, res: Response) => {
     user.refreshToken = refreshToken;
     await user.save({ validateBeforeSave: false });
 
-    res
-      .status(200)
-      .json({
-        message: "Password has been reset successfully.",
-        accessToken,
-        refreshToken,
-      });
+    res.status(200).json({
+      message: "Password has been reset successfully.",
+      accessToken,
+      refreshToken,
+    });
   } catch (error) {
     console.error("Reset Password Error:", error);
     res

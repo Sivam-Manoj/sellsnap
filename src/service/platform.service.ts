@@ -1,5 +1,6 @@
 import openai from "../utils/openaiClient.js";
 import Platform, { IPlatform, IField } from "../models/platform.model.js";
+import TotalTokens from "../models/totalTokens.model.js";
 
 export const generateSystemMessage = async (
   platformName: string,
@@ -13,6 +14,11 @@ export const generateSystemMessage = async (
   "field3": "Content here should match the required structure, tone, and formatting rules."
 }
 `;
+  let totalTokens = await TotalTokens.findOne();
+  if (!totalTokens) {
+    totalTokens = new TotalTokens({ totalTokens: 0 });
+    await totalTokens.save();
+  }
 
   const fieldsList = fields
     .map((f) => {
@@ -53,6 +59,11 @@ export const generateSystemMessage = async (
       },
     ],
   });
+
+  if (response.usage?.total_tokens) {
+    totalTokens.totalTokens += response.usage.total_tokens;
+    await totalTokens.save();
+  }
 
   // Check if choices and message are defined
   const systemMessage = response.choices?.[0]?.message?.content;

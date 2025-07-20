@@ -2,6 +2,7 @@ import openai from "../utils/openaiClient.js";
 import Listing from "../models/listing.model.js";
 import Platform from "../models/platform.model.js";
 import { getRealtimePriceDetails } from "./listingService.js"; // Reusing the price analysis function
+import TotalTokens from "../models/totalTokens.model.js";
 
 interface ProductData {
   images: string[];
@@ -39,6 +40,12 @@ export const processBulkListing = async (data: BulkListingData) => {
     if (product.images.length === 0) {
       console.warn("Skipping product with no images.");
       continue;
+    }
+
+    let totalTokens = await TotalTokens.findOne();
+    if (!totalTokens) {
+      totalTokens = new TotalTokens({ totalTokens: 0 });
+      await totalTokens.save();
     }
 
     const systemMessage = platformDoc.systemMessage;
@@ -84,6 +91,11 @@ export const processBulkListing = async (data: BulkListingData) => {
       ],
       response_format: { type: "json_object" },
     });
+
+    if (response.usage?.total_tokens) {
+      totalTokens.totalTokens += response.usage.total_tokens;
+      await totalTokens.save();
+    }
 
     const choice = response.choices[0];
     const listingContent = choice.message.content;
