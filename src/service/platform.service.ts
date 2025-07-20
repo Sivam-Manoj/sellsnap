@@ -16,7 +16,11 @@ export const generateSystemMessage = async (
 `;
   let totalTokens = await TotalTokens.findOne();
   if (!totalTokens) {
-    totalTokens = new TotalTokens({ totalTokens: 0 });
+    totalTokens = new TotalTokens({
+      totalTokens: 0,
+      totalInputTokens: 0,
+      totalOutputTokens: 0,
+    });
     await totalTokens.save();
   }
 
@@ -52,6 +56,7 @@ export const generateSystemMessage = async (
 
   const response = await openai.chat.completions.create({
     model: "gpt-4.1",
+    max_tokens: 32768,
     messages: [
       {
         role: "system",
@@ -60,8 +65,10 @@ export const generateSystemMessage = async (
     ],
   });
 
-  if (response.usage?.total_tokens) {
+  if (response.usage) {
     totalTokens.totalTokens += response.usage.total_tokens;
+    totalTokens.totalInputTokens += response.usage.prompt_tokens;
+    totalTokens.totalOutputTokens += response.usage.completion_tokens;
     await totalTokens.save();
   }
 

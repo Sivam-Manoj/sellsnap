@@ -32,7 +32,11 @@ export const generateListings = async (
 
       let totalTokens = await TotalTokens.findOne();
       if (!totalTokens) {
-        totalTokens = new TotalTokens({ totalTokens: 0 });
+        totalTokens = new TotalTokens({
+          totalTokens: 0,
+          totalInputTokens: 0,
+          totalOutputTokens: 0,
+        });
         await totalTokens.save();
       }
 
@@ -75,7 +79,7 @@ export const generateListings = async (
 
         const response = await openai.chat.completions.create({
           model: "gpt-4.1",
-          max_tokens: 30000,
+          max_tokens: 32768,
           messages: [
             { role: "system", content: systemMessage },
             { role: "user", content: [textMessage, ...imageMessagesFromUrls] },
@@ -83,8 +87,10 @@ export const generateListings = async (
           response_format: { type: "json_object" },
         });
         choice = response.choices[0];
-        if (response.usage?.total_tokens) {
+        if (response.usage) {
           totalTokens.totalTokens += response.usage.total_tokens;
+          totalTokens.totalInputTokens += response.usage.prompt_tokens;
+          totalTokens.totalOutputTokens += response.usage.completion_tokens;
           await totalTokens.save();
         }
       } catch (error) {
@@ -103,16 +109,21 @@ export const generateListings = async (
 
         const response = await openai.chat.completions.create({
           model: "gpt-4.1",
-          max_tokens: 30000,
+          max_tokens: 32768,
           messages: [
             { role: "system", content: systemMessage },
-            { role: "user", content: [textMessage, ...imageMessagesFromFiles] },
+            {
+              role: "user",
+              content: [textMessage, ...imageMessagesFromFiles],
+            },
           ],
           response_format: { type: "json_object" },
         });
         choice = response.choices[0];
-        if (response.usage?.total_tokens) {
+        if (response.usage) {
           totalTokens.totalTokens += response.usage.total_tokens;
+          totalTokens.totalInputTokens += response.usage.prompt_tokens;
+          totalTokens.totalOutputTokens += response.usage.completion_tokens;
           await totalTokens.save();
         }
       }
@@ -247,7 +258,11 @@ export const updateListing = async (
 export const getRealtimePriceDetails = async (listing: IListing) => {
   let totalTokens = await TotalTokens.findOne();
   if (!totalTokens) {
-    totalTokens = new TotalTokens({ totalTokens: 0 });
+    totalTokens = new TotalTokens({
+      totalTokens: 0,
+      totalInputTokens: 0,
+      totalOutputTokens: 0,
+    });
     await totalTokens.save();
   }
 
@@ -341,6 +356,9 @@ Instructions:
     });
     if (response.usage?.total_tokens) {
       totalTokens.totalTokens += response.usage.total_tokens;
+      totalTokens.totalInputTokens += response.usage.input_tokens;
+      totalTokens.totalOutputTokens += response.usage.output_tokens;
+      // Note: prompt_tokens and completion_tokens are not available from this endpoint.
       await totalTokens.save();
     }
 

@@ -44,7 +44,11 @@ export const processBulkListing = async (data: BulkListingData) => {
 
     let totalTokens = await TotalTokens.findOne();
     if (!totalTokens) {
-      totalTokens = new TotalTokens({ totalTokens: 0 });
+      totalTokens = new TotalTokens({
+        totalTokens: 0,
+        totalInputTokens: 0,
+        totalOutputTokens: 0,
+      });
       await totalTokens.save();
     }
 
@@ -65,7 +69,7 @@ export const processBulkListing = async (data: BulkListingData) => {
     - Do NOT include any explanations, extra text, or formatting beyond the JSON object.
     
     Product Details:
-    - Product: ${prompt || "the item in the image(s)"}
+    - Product: ${`the item in the image(s)`}
     - Platform: ${platform}
     - Language: ${language}
     - Country: ${country}
@@ -83,8 +87,8 @@ export const processBulkListing = async (data: BulkListingData) => {
     }));
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4o",
-      max_tokens: 4096,
+      model: "gpt-4.1",
+      max_tokens: 32768,
       messages: [
         { role: "system", content: systemMessage },
         { role: "user", content: [textMessage, ...imageMessages] },
@@ -92,8 +96,10 @@ export const processBulkListing = async (data: BulkListingData) => {
       response_format: { type: "json_object" },
     });
 
-    if (response.usage?.total_tokens) {
+    if (response.usage) {
       totalTokens.totalTokens += response.usage.total_tokens;
+      totalTokens.totalInputTokens += response.usage.prompt_tokens;
+      totalTokens.totalOutputTokens += response.usage.completion_tokens;
       await totalTokens.save();
     }
 
