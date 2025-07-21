@@ -365,7 +365,14 @@ export const appleSignIn = async (req: Request, res: Response) => {
 
     let user = await User.findOne({ appleId });
 
-    if (!user) {
+    if (user) {
+      // User exists, check if we need to update the name
+      if (fullName && user.username !== fullName) {
+        user.username = fullName;
+        await user.save();
+      }
+    } else {
+      // New user
       const existingUser = await User.findOne({ email });
       if (existingUser) {
         return res.status(400).json({
@@ -374,9 +381,8 @@ export const appleSignIn = async (req: Request, res: Response) => {
         });
       }
 
-      // Note: Apple only provides name on the first sign-in.
-      // The client can optionally send it if available.
-      const username = fullName !== null ? fullName : email.split("@")[0];
+      // Apple only provides name on first sign-in. Use email part as fallback.
+      const username = fullName || email.split("@")[0];
 
       user = new User({
         appleId,
