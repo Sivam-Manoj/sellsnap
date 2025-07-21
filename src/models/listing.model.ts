@@ -7,6 +7,7 @@ export interface IListing extends Document {
     imageUrls?: string[];
     priceDetails?: mongoose.Schema.Types.Mixed; // Optional field
     finalPrice?: number; // Optional field
+    isBulk?: boolean;
     createdAt: Date;
     updatedAt: Date;
     country: string;

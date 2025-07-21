@@ -121,6 +121,10 @@ export const processBulkListing = async (data: BulkListingData) => {
       userId: userId,
       platform: platform,
       imageUrls: product.images,
+      country: country,
+      currency: currency,
+      language: language,
+      isBulk: true,
     });
 
     if (priceAnalysisEnabled) {
