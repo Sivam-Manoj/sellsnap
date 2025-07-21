@@ -13,6 +13,10 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 
+if (process.env.NODE_ENV === 'production') {
+  console.log = () => {};
+}
+
 const startServer = async () => {
   try {
     await connectDB();
@@ -29,7 +33,7 @@ const startServer = async () => {
     app.use("/api/bulk-listings", bulkListingRoutes);
 
     app.listen(port, () => {
-      console.log(`Server running at http://localhost:${port}`);
+      console.log(`Server running at https://sellsnap.co.uk`);
     });
   } catch (error) {
     console.error("Failed to start server:", error);

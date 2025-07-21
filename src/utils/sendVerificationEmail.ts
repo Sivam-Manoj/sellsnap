@@ -1,6 +1,9 @@
 import * as dotenv from "dotenv";
-import axios from "axios";
-import { getVerificationEmailHtml, getPasswordResetEmailHtml } from "./emailHtml.js";
+import { Resend } from "resend";
+import {
+  getVerificationEmailHtml,
+  getPasswordResetEmailHtml,
+} from "./emailHtml.js";
 
 dotenv.config();
 
@@ -10,63 +13,46 @@ interface EmailOptions {
   htmlContent: string;
 }
 
+const resend = new Resend(process.env.RESEND_API_KEY);
+
 export async function sendTransactionalEmail(
   options: EmailOptions
 ): Promise<void> {
-  const { BREVO_API_KEY, BREVO_SENDER_NAME, BREVO_SENDER_EMAIL } = process.env;
-
-  if (!BREVO_API_KEY || !BREVO_SENDER_NAME || !BREVO_SENDER_EMAIL) {
-    throw new Error(
-      "Missing required environment variables for sending email."
-    );
+  if (!process.env.RESEND_API_KEY) {
+    throw new Error("Missing RESEND_API_KEY in environment variables.");
   }
 
-  const payload = {
-    sender: {
-      name: BREVO_SENDER_NAME,
-      email: BREVO_SENDER_EMAIL,
-    },
-    to: [
-      {
-        email: options.to,
-      },
-    ],
-    subject: options.subject,
-    htmlContent: options.htmlContent,
-  };
+  const fromAddress = "verify@sellsnap.co.uk"; // Your verified domain sender
 
   try {
-    await axios.post("https://api.brevo.com/v3/smtp/email", payload, {
-      headers: {
-        "api-key": BREVO_API_KEY,
-        "Content-Type": "application/json",
-      },
+    await resend.emails.send({
+      from: `SellSnap <${fromAddress}>`,
+      to: options.to,
+      subject: options.subject,
+      html: options.htmlContent,
     });
-    console.log(`✅ Email sent to ${options.to}`);
   } catch (error: any) {
-    console.error(
-      "❌ Failed to send email:",
-      error.response?.data || error.message
-    );
+    console.error("❌ Failed to send email:", error.message);
     throw error;
   }
 }
 
-export const sendEmail = async (to: string, subject: string, html: string) => {
-  await sendTransactionalEmail({ to, subject, htmlContent: html });
-}
-
-export async function sendVerificationCode(
+export const sendEmail = async (
   to: string,
-  code: string
-) {
+  subject: string,
+  html: string
+) => {
+  await sendTransactionalEmail({ to, subject, htmlContent: html });
+};
+
+export async function sendVerificationCode(to: string, code: string) {
   const subject = `Your SellSnap Verification Code: ${code}`;
   const htmlContent = getVerificationEmailHtml(code);
   await sendTransactionalEmail({ to, subject, htmlContent });
 }
 
 export async function sendPasswordResetLink(to: string, resetLink: string) {
-  const subject = 'Your SellSnap Password Reset Link';
+  const subject = "Your SellSnap Password Reset Link";
   const htmlContent = getPasswordResetEmailHtml(resetLink);
   await sendTransactionalEmail({ to, subject, htmlContent });
 }
