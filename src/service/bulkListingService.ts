@@ -87,7 +87,7 @@ export const processBulkListing = async (data: BulkListingData) => {
     }));
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4.1",
+      model: "o3",
       max_tokens: 32768,
       messages: [
         { role: "system", content: systemMessage },
