@@ -79,7 +79,6 @@ export const generateListings = async (
 
         const response = await openai.chat.completions.create({
           model: "o3",
-          max_tokens: 32768,
           messages: [
             { role: "system", content: systemMessage },
             { role: "user", content: [textMessage, ...imageMessagesFromUrls] },
@@ -109,7 +108,6 @@ export const generateListings = async (
 
         const response = await openai.chat.completions.create({
           model: "o3",
-          max_tokens: 32768,
           messages: [
             { role: "system", content: systemMessage },
             {
