@@ -31,103 +31,108 @@ const generateAnalysis = async (
         },
       ],
       input: `
-      You are a business trends analyst. I want a brief but valuable analysis based on current web data.
+You are a business trends analyst. I want a brief but valuable analysis based on current web data.
 
-        Product: ${product}
-        Marketplace: ${marketplace} 
-        Country: ${country}
-        Date: ${formattedDate}
+  Product: ${product}
+  Marketplace: ${marketplace} 
+  Country: ${country}
+  Date: ${formattedDate}
 
-        Please provide:
-        1. Real-time trending products and services in this market and on ${formattedDate}.
-        2. Similar products that are currently popular or gaining traction.
-        3. What types of items are currently selling well and ways to capitalize on them.
-        4. Any relevant insights, platforms, or business models that can help generate income now.
-        5.don't provide not working links.
-        6. if the selected marketplace is not available, provide a general analysis with other market places.
-        7. only do analysis strictly to the product :${product} if the product any search top 5 high selling products in internet .
-        Format the output in the following JSON structure:
+  Please provide:
+  1. Real-time trending products and services in this market and on ${formattedDate}.
+  2. Similar products that are currently popular or gaining traction.
+  3. What types of items are currently selling well and ways to capitalize on them.
+  4. Any relevant insights, platforms, or business models that can help generate income now.
+  5. Do not provide direct product URLs. Prefer official platform search links such as:
+     - Amazon: https://www.amazon.com/s?k=PRODUCT_NAME
+     - Etsy: https://www.etsy.com/search?q=PRODUCT_NAME
+     - TikTok Shop: https://www.tiktok.com/search?q=PRODUCT_NAME
+  6. If the selected marketplace is not available, provide a general analysis with other relevant marketplaces.
+  7. Only do analysis strictly related to the product: ${product} if the product has sufficient trending or top-selling search results.
 
+Format the output in the following JSON structure:
+
+{
+  "summary": "Brief overview of market trends and opportunities. Minimum 300 words.",
+  "trendingProductsAndServices": [
+    {
+      "name": "Example Product 1",
+      "category": "Category A",
+      "reason": "High demand due to seasonal trends",
+      "url": "https://www.amazon.com/s?k=example+product+1"
+    },
+    {
+      "name": "Example Service 2",
+      "category": "Service B",
+      "reason": "Popular on social platforms",
+      "url": "https://www.etsy.com/search?q=example+service+2"
+    }
+  ],
+  "similarTrendingProducts": [
+    {
+      "name": "Similar Product A",
+      "comparedTo": "${product}",
+      "trendReason": "Recommended alternative by influencers",
+      "url": "https://www.amazon.com/s?k=similar+product+A"
+    },
+    {
+      "name": "Similar Product B",
+      "comparedTo": "${product}",
+      "trendReason": "Better pricing and growing reviews",
+      "url": "https://www.etsy.com/search?q=similar+product+B"
+    }
+  ],
+  "moneyMakingOpportunities": [
+    {
+      "idea": "Dropshipping high-demand accessories",
+      "platforms": [
         {
-            "summary": "Brief overview of market trends and opportunities. minimum 300 words.",
-            "trendingProductsAndServices": [
-                {
-                "name": "Example Product 1",
-                "category": "Category A",
-                "reason": "High demand due to seasonal trends",
-                "url": "https://example.com/product-1"
-                },
-                {
-                "name": "Example Service 2",
-                "category": "Service B",
-                "reason": "Popular on social platforms",
-                "url": "https://example.com/service-2"
-                }
-            ],
-            "similarTrendingProducts": [
-                {
-                "name": "Similar Product A",
-                "comparedTo": "${product}",
-                "trendReason": "Recommended alternative by influencers",
-                "url": "https://example.com/similar-a"
-                },
-                {
-                "name": "Similar Product B",
-                "comparedTo": "${product}",
-                "trendReason": "Better pricing and growing reviews",
-                "url": "https://example.com/similar-b"
-                }
-            ],
-            "moneyMakingOpportunities": [
-                {
-                "idea": "Dropshipping high-demand accessories",
-                "platforms": [
-                    {
-                    "name": "TikTok Shop",
-                    "url": "https://www.tiktok.com/shop"
-                    },
-                    {
-                    "name": "Etsy",
-                    "url": "https://www.etsy.com/sell"
-                    }
-                ],
-                "why": "Low startup cost and viral potential"
-                },
-                {
-                "idea": "Bundling digital products",
-                "platforms": [
-                    {
-                    "name": "Gumroad",
-                    "url": "https://gumroad.com/"
-                    },
-                    {
-                    "name": "Shopify",
-                    "url": "https://www.shopify.com/"
-                    }
-                ],
-                "why": "High margin and passive income"
-                }
-            ],
-            "platformInsights": [
-                {
-                "platform": "Amazon",
-                "tip": "Use A+ Content and Sponsored Ads to boost visibility",
-                "url": "https://sellercentral.amazon.com/aps"
-                },
-                {
-                "platform": "Etsy",
-                "tip": "SEO-rich product titles and trending tags improve discovery",
-                "url": "https://www.etsy.com/sell"
-                },
-                {
-                "platform": "TikTok Shop",
-                "tip": "Leverage short product demos with trending sounds",
-                "url": "https://seller.tiktokglobalshop.com/"
-                }
-            ]
-          }
-        Keep it concise, up-to-date, and data-driven.           
-      `,
+          "name": "TikTok Shop",
+          "url": "https://www.tiktok.com/shop"
+        },
+        {
+          "name": "Etsy",
+          "url": "https://www.etsy.com/sell"
+        }
+      ],
+      "why": "Low startup cost and viral potential"
+    },
+    {
+      "idea": "Bundling digital products",
+      "platforms": [
+        {
+          "name": "Gumroad",
+          "url": "https://gumroad.com/"
+        },
+        {
+          "name": "Shopify",
+          "url": "https://www.shopify.com/"
+        }
+      ],
+      "why": "High margin and passive income"
+    }
+  ],
+  "platformInsights": [
+    {
+      "platform": "Amazon",
+      "tip": "Use A+ Content and Sponsored Ads to boost visibility",
+      "url": "https://sellercentral.amazon.com/aps"
+    },
+    {
+      "platform": "Etsy",
+      "tip": "SEO-rich product titles and trending tags improve discovery",
+      "url": "https://www.etsy.com/sell"
+    },
+    {
+      "platform": "TikTok Shop",
+      "tip": "Leverage short product demos with trending sounds",
+      "url": "https://seller.tiktokglobalshop.com/"
+    }
+  ]
+}
+Keep it concise, verified, up-to-date, and data-driven.
+`
+
     });
     if (response.usage?.total_tokens) {
       totalTokens.totalTokens += response.usage.total_tokens;
