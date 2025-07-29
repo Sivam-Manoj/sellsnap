@@ -4,6 +4,7 @@ import platformRoutes from "./routes/platform.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import userRoutes from './routes/user.routes.js';
 import bulkListingRoutes from './routes/bulkListing.routes.js';
+import trendRoutes from './routes/trend.routes.js';
 import { seedPlatforms } from './utils/platform.seeder.js';
 import connectDB from "./config/database.js";
 import dotenv from "dotenv";
@@ -30,6 +31,7 @@ const startServer = async () => {
     app.use("/api/platforms", platformRoutes);
     app.use("/api/auth", authRoutes);
     app.use("/api/user", userRoutes);
+    app.use("/api/trend", trendRoutes);
     app.use("/api/bulk-listings", bulkListingRoutes);
 
     app.listen(port, () => {
